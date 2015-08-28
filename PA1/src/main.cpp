@@ -258,7 +258,7 @@ bool initialize()
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
 
-    // Delete the shaders, now that they have are attached to the shader program
+    // Delete the shaders, now that they have been attached to the shader program
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
