@@ -10,6 +10,8 @@
 #include <string>
 #include <fstream>
 
+#include "Shader.h"
+
 using namespace std;
 
 GLuint LoadShaderFromFile(string path, GLuint shaderType);
@@ -246,21 +248,30 @@ bool initialize()
     //compile the shaders
     GLint shader_status;
 
+    Shader vertex_shader;
+    Shader fragment_shader;
+
     // Vertex shader first
-    GLuint vertex_shader = LoadShaderFromFile("Shaders/vShader.glvs", GL_VERTEX_SHADER );
+    vertex_shader.Load("Shaders/vShader.glvs", GL_VERTEX_SHADER );
 
     // Now the Fragment shader
-    GLuint fragment_shader = LoadShaderFromFile("Shaders/fShader.glfs", GL_FRAGMENT_SHADER );
+    fragment_shader.Load("Shaders/fShader.glfs", GL_FRAGMENT_SHADER );
 
     //Now we link the 2 shader objects into a program
     //This program is what is run on the GPU
     program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
+    glAttachShader(program, vertex_shader.GetID());
+    glAttachShader(program, fragment_shader.GetID());
 
+<<<<<<< HEAD
+    // Delete the shaders, now that they are linked
+    vertex_shader.DeleteShader();
+    fragment_shader.DeleteShader();
+=======
     // Delete the shaders, now that they have been attached to the shader program
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
+>>>>>>> 4a0effd1574ab9b7e5c3b172eebfe7cf558216ff
 
     glLinkProgram(program);
 
@@ -334,112 +345,4 @@ float getDT()
     ret = std::chrono::duration_cast< std::chrono::duration<float> >(t2-t1).count();
     t1 = std::chrono::high_resolution_clock::now();
     return ret;
-}
-
-// Loads a shader from a file and returns a shaderID
-GLuint LoadShaderFromFile(string path, GLuint shaderType)
-{
-    //  Success flag
-    GLint compiled = GL_FALSE;
-
-    // Create a shader of the correct type
-    int shaderID = glCreateShader(shaderType);
-
-    // Input stream
-    ifstream file(path.c_str());
-
-    // Source string
-    string shaderSource;
-
-    // Clear file flags
-    file.clear();
-
-    // If the file opened successfully
-    if (file.good())
-    {
-        // Get total length of file
-        file.seekg(0, ios::end);
-
-        // Set string size to length of file
-        shaderSource.reserve((unsigned int)file.tellg());
-
-        // Reset cursor to beginning of file
-        file.seekg(0, ios::beg);
-
-        // Read in file as one string
-        shaderSource.assign((istreambuf_iterator<char>(file)), (istreambuf_iterator<char>()));
-
-    }
-    else
-    {
-        // Print error message
-        printf("Couldn't open file %s\n", path.c_str());
-
-        // Set string to empty
-        shaderSource = "";
-    }
-
-    // Close file
-    file.close();
-
-    // Set shader source
-    glShaderSource(shaderID, 1, (const GLchar**)&shaderSource, NULL);
-
-    // Compile shader
-    glCompileShader(shaderID);
-
-    // Check if shader compiled successfully
-    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &compiled);
-
-    // If compilation failed
-    if (compiled != GL_TRUE)
-    {
-        // Print an error message
-        printf("Couldn't compile shader %d\n\n Source code\n%s\n", shaderID, shaderSource.c_str());
-
-        // Print shader log
-        PrintShaderLog(shaderID);
-
-        // Delete the shader
-        glDeleteShader(shaderID);
-
-        // Set shaderID to 0
-        shaderID = 0;
-    }
-
-    return shaderID;
-}
-
-// Allow outputting shader logs for debugging purposes
-void PrintShaderLog(int shaderID)
-{
-    // Make sure name is shader
-    if (glIsShader(shaderID))
-    {
-        // Shader log length
-        int infoLogLength = 0;
-        int maxLength = infoLogLength;
-
-        // Get info string length
-        glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // Allocate string
-        char* infoLog = new char[maxLength];
-
-        // Get info log
-        glGetShaderInfoLog(shaderID, maxLength, &infoLogLength, infoLog);
-
-        if (infoLogLength > 0)
-        {
-            //Print Log
-            printf("%s\n", infoLog);
-        }
-
-        // Deallocate string
-        delete[] infoLog;
-    }
-    else
-    {
-        printf("Name %d is not a shader\n", shaderID);
-    }
 }
