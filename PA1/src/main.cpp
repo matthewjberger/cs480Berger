@@ -263,9 +263,10 @@ bool initialize()
     glAttachShader(program, vertex_shader.GetID());
     glAttachShader(program, fragment_shader.GetID());
 
-    // Delete the shaders, now that they are linked
+    // Delete the shaders, now that they are attached
     vertex_shader.DeleteShader();
     fragment_shader.DeleteShader();
+	
     glLinkProgram(program);
 
     //check if everything linked ok
