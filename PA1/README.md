@@ -15,7 +15,7 @@ For this program, I added a class to encapsulate shaders. Some notable functions
 
     bool Shader::Load(std::string path, GLuint shaderType)
 
-This function will create and compile a shader from a plain-text file of any extension. A glsl shader source path as well as a shader type must be specified (i.e. GL\_VERTEX\_SHADER, GL\_FRAGMENT\_SHADER, etc). This function sets the ID of the loaded shader internally for use in linking to the shader program. I open the file, grab the size and reserve enough memory for a string to hold the information. Then I go back to the beginning of the file and read in the entire file as a single string.
+This function will create and compile a shader from a plain-text file of any extension. A glsl shader source path as well as a shader type must be specified (e.g. GL\_VERTEX\_SHADER, GL\_FRAGMENT\_SHADER, etc). This function sets the ID of the loaded shader internally for use in linking to the shader program. I open the file, grab the size and reserve enough memory for a string to hold the information. Then I go back to the beginning of the file and read in the entire file as a single string.
 
     void Shader::PrintLog()
 
