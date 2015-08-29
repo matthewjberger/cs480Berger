@@ -14,9 +14,6 @@
 
 using namespace std;
 
-GLuint LoadShaderFromFile(string path, GLuint shaderType);
-void PrintShaderLog(int shaderID);
-
 //--Data types
 //This object will define the attributes of a vertex(position, color, etc...)
 struct Vertex
@@ -266,7 +263,7 @@ bool initialize()
     // Delete the shaders, now that they are attached
     vertex_shader.DeleteShader();
     fragment_shader.DeleteShader();
-	
+
     glLinkProgram(program);
 
     //check if everything linked ok
