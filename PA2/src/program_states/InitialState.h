@@ -17,6 +17,8 @@ class InitialState : public ProgramState
 
         static InitialState* GetInstance();
 
+        void SetSelectedMenuOption(int option);
+
     private:
         InitialState();
         ~InitialState();
@@ -28,4 +30,30 @@ class InitialState : public ProgramState
         /**************************/
         /* Place state items here */
         /**************************/
+        struct Vertex
+        {
+            GLfloat position[3];
+            GLfloat color[3];
+        };
+
+        ShaderProgram shaderProgram;
+        VAO cubeVAO;
+        VBO cubeVBO;
+
+        glm::mat4 model;
+        glm::mat4 view;
+        glm::mat4 projection;
+        glm::mat4 mvp;
+        std::chrono::time_point<std::chrono::high_resolution_clock> t1,t2;
+
+        bool stopped;
+        bool reversed;
+        int selectedMenuOption;
+
+        enum MenuOptions
+        {
+            START_SPINNING = 0,
+            PAUSE_SPINNING = 1,
+            EXIT_PROGRAM   = 2
+        };
 };
