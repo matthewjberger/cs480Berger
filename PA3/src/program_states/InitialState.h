@@ -1,4 +1,5 @@
 #include "../core/GlutProgram.h"
+#include "../core/Menu.h"
 
 class InitialState : public ProgramState
 {
@@ -16,8 +17,6 @@ class InitialState : public ProgramState
         void Update();
 
         static InitialState* GetInstance();
-
-        void SetSelectedMenuOption(int option);
 
     private:
         InitialState();
@@ -51,7 +50,6 @@ class InitialState : public ProgramState
 
         bool stopped;
         bool reversed;
-        int selectedMenuOption;
 
         enum MenuOptions
         {
@@ -59,4 +57,6 @@ class InitialState : public ProgramState
             PAUSE_SPINNING = 1,
             EXIT_PROGRAM   = 2
         };
+
+        Menu *contextMenu;
 };
