@@ -17,7 +17,6 @@ void InitialState::Initialize(GlutProgram* program)
     mainProgram = program;
 
     // Initialize variables
-    selectedMenuOption = 0;
     reversed = true;
     stopped  = false;
 
