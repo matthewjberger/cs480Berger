@@ -42,7 +42,6 @@ class InitialState : public ProgramState
         glm::mat4 view;
         glm::mat4 projection;
         glm::mat4 mvp;
-        std::chrono::time_point<std::chrono::high_resolution_clock> t1,t2;
 
         bool stopped;
         bool reversed;
