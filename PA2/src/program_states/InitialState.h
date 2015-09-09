@@ -17,8 +17,6 @@ class InitialState : public ProgramState
 
         static InitialState* GetInstance();
 
-        void SetSelectedMenuOption(int option);
-
     private:
         InitialState();
         ~InitialState();
@@ -48,7 +46,6 @@ class InitialState : public ProgramState
 
         bool stopped;
         bool reversed;
-        int selectedMenuOption;
 
         enum MenuOptions
         {

@@ -1,4 +1,5 @@
 #include "InitialState.h"
+#include "../core/Menu.h"
 
 InitialState* InitialState::instance = 0;
 InitialState::InitialState(){}
@@ -11,8 +12,6 @@ InitialState* InitialState::GetInstance()
     return instance;
 }
 
-void Menu(int value){InitialState::GetInstance()->SetSelectedMenuOption(value); glutPostRedisplay();}
-
 void InitialState::Initialize(GlutProgram* program)
 {
     mainProgram = program;
@@ -23,12 +22,11 @@ void InitialState::Initialize(GlutProgram* program)
     stopped  = false;
 
     // Menu creation
-    int menuID = glutCreateMenu(Menu);
-    glutSetMenu(menuID);
-    glutAddMenuEntry("Start Spinning", START_SPINNING);
-    glutAddMenuEntry("Pause Spinning", PAUSE_SPINNING);
-    glutAddMenuEntry("Exit Program",   EXIT_PROGRAM);
-    glutAttachMenu(GLUT_RIGHT_BUTTON);
+    Menu *contextMenu = Menu::GetInstance();
+    contextMenu->AddEntry("Start Spinning", START_SPINNING);
+    contextMenu->AddEntry("Pause Spinning", PAUSE_SPINNING);
+    contextMenu->AddEntry("Exit Program",   EXIT_PROGRAM);
+    contextMenu->AttachToMouseRight();
 
     Vertex geometry[] =
     {
@@ -148,7 +146,7 @@ void InitialState::Keyboard(unsigned char key, int xPos, int yPos)
 
 void InitialState::Update()
 {
-    switch(selectedMenuOption)
+    switch(Menu::GetInstance()->GetSelectedOption())
     {
         case START_SPINNING:
             stopped = false;
@@ -198,9 +196,3 @@ void InitialState::Reshape(int newWidth, int newHeight)
     glViewport(0, 0, mainProgram->GetScreenWidth(), mainProgram->GetScreenHeight());
     glm::perspective(45.0f, mainProgram->GetAspectRatio(), 0.01f, 100.0f);
 }
-
-void InitialState::SetSelectedMenuOption(int option)
-{
-    selectedMenuOption = option;
-}
-
