@@ -36,7 +36,7 @@ Then I transform these matrices in Update(). The moon is translated around the p
     moonModelMatrix = glm::scale(moonModelMatrix, glm::vec3(0.2, 0.2, 0.2));
     planetModelMatrix = glm::rotate(planetModelMatrix, 4*rotationAngle, glm::vec3(0.0f, 1.0f, 0.0f));
 
-Then finally in Render():
+Then finally in Render() I update the MVP matrix uniform variable before rendering each cube:
 
     planetMVP = projection * view * planetModelMatrix;
     moonMVP = projection * view * moonModelMatrix;
