@@ -6,7 +6,7 @@ In this project, I extend the functionality of PA2 by adding a moon that orbits 
 
 I implemented the extra credit for this assignment. I used fixed-function pipeline raster functions for quick and dirty text rendering, but will create a proper text engine in the future. I had to use:
 
-    #include <Gl/freeglut.h>
+    #include <GL/freeglut.h>
 
 because glutBitmapString() is not available in GLUT alone. The code for rendering the extra credit text is shown below:
 
