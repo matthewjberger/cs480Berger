@@ -1,5 +1,5 @@
 # Moons
-----
+
 In this project, I extend the functionality of PA2 by adding a moon that orbits the initial planet, as well as text to indicate the direction the planet is rotating.
 
 ### Notes
