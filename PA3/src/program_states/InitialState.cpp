@@ -190,6 +190,18 @@ void InitialState::Render()
     glDrawArrays(GL_TRIANGLES, 0, 36);//mode, starting index, count
     shaderProgram.SetUniform("mvpMatrix", &moonMVP);
     glDrawArrays(GL_TRIANGLES, 0, 36);//mode, starting index, count
+
+    // Render text with fixed-function pipeline calls
+    glUseProgram(0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0.0f, mainProgram->GetScreenWidth() - 1.0, 0.0, mainProgram->GetScreenHeight() - 1.0, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glRasterPos2i(10,10);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    std::string text = (reversed) ? "Clockwise" : "Counter-Clockwise";
+    glutBitmapString(GLUT_BITMAP_HELVETICA_18, (const unsigned char*)text.c_str());
 }
 
 void InitialState::Reshape(int newWidth, int newHeight)
