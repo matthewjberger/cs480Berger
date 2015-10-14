@@ -56,11 +56,6 @@ void Planet::Update()
    // scale
     modelMatrix = glm::scale( modelMatrix, glm::vec3(size) );
 
-    for(int i = 0; i < moonModelMatrices.size(); i++)
-    {
-        moonModelMatrices[i] = glm::scale(glm::translate(modelMatrix, 3*cos(angleO), 0.0f, 3*sin(angleO)))), glm::vec3(size*2/3));
-    }
-
     // spin
     modelMatrix = glm::rotate( modelMatrix, angleR, glm::vec3(0.0f,1.0f,0.0f) );
 
