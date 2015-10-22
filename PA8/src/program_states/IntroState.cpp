@@ -44,6 +44,16 @@ void IntroState::Initialize()
     // Cylinder
     models[3]->Translate(glm::vec3(8.0f, 4.0f, 10.0f));
     models[3]->Scale(glm::vec3(3.0f, 3.0f, 3.0f));
+
+    // Initialize Bullet
+    broadphase             = new btDbvtBroadphase();
+    collisionConfiguration = new btDefaultCollisionConfiguration();
+    dispatcher             = new btCollisionDispatcher(collisionConfiguration);
+    solver                 = new btSequentialImpulseConstraintSolver();
+    dynamicsWorld          = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+
+    // Add gravity
+    dynamicsWorld->setGravity(btVector3(0, -9.81, 0));
 }
 
 void IntroState::Finalize()
@@ -58,6 +68,19 @@ void IntroState::Finalize()
     camera = NULL;
     delete skybox;
     skybox = NULL;
+
+    // Free Bullet
+    delete broadphase;
+    delete collisionConfiguration;
+    delete dispatcher;
+    delete solver;
+    delete dynamicsWorld;
+
+    broadphase             = NULL;
+    collisionConfiguration = NULL;
+    dispatcher             = NULL;
+    solver                 = NULL;
+    dynamicsWorld          = NULL;
 }
 
 void IntroState::HandleEvents()
@@ -82,8 +105,7 @@ void IntroState::Draw()
 
     for(size_t i = 0; i < SIZE(models); i++)
     {
-        glm::mat4 modelMat = models[i]->GetModelMatrix();
-        shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(modelMat));
+        shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[i]->GetModelMatrix()));
         models[i]->Draw();
     }
 }

@@ -42,6 +42,31 @@ class IntroState : public GameState
         Model* models[4];
 
         Texture sunTexture;
+
+        /* Bullet */
+        // Tells bullet how to check for collisions between objects
+        // Helps to eliminate object pairs that should not collide
+        btBroadphaseInterface* broadphase;
+
+        // Create a collision configuration
+        // This is a collision algorithm
+        // It can be used to register a callback that filters overlapping
+        // broadphase proxies so that the collisions are not processed by the rest of the system.
+        btDefaultCollisionConfiguration* collisionConfiguration;
+
+        // Create a dispatcher
+        // Takes in the collisionConfiguration pointer as a parameter
+        // used in conjunction with collisionConfiguration for the collision algorithm
+        // Sends events to the objects
+        btCollisionDispatcher *dispatcher;
+
+        // Create a solver
+        // This causes the objects to interact properly
+        btSequentialImpulseConstraintSolver* solver;
+
+        // Create a physics world
+        // Takes in all the parameters listed above
+        btDiscreteDynamicsWorld* dynamicsWorld;
 };
 
 

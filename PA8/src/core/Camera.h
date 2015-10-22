@@ -18,7 +18,7 @@ class Camera
         float GetYawSensitivity();
         void  SetYawSensitivity(float newSens);
 
-        glm::mat4 GetMVP(glm::mat4 &modelMatrix);
+        glm::mat4 GetMVP(glm::mat4 modelMatrix);
 
         glm::mat4 projectionMatrix;
         glm::mat4 viewMatrix;

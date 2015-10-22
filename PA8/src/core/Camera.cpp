@@ -131,7 +131,7 @@ void Camera::SetYawSensitivity(float newSens)
     yawSensitivity = newSens;
 }
 
-glm::mat4 Camera::GetMVP(glm::mat4 &modelMatrix)
+glm::mat4 Camera::GetMVP(glm::mat4 modelMatrix)
 {
     glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
     return mvpMatrix;

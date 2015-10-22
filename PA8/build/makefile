@@ -23,7 +23,7 @@ INCLUDE_PATHS=$(shell sdl2-config --cflags) -I/usr/include/bullet
 LIBRARY_PATHS=$(shell sdl2-config --libs)
 
 # Compiler flags
-COMPILER_FLAGS = -w -std=c++11
+COMPILER_FLAGS = -g -w -std=c++11
 
 # Linker flags
 LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lGL -lGLEW -lassimp -lBulletDynamics -lBulletSoftBody -lBulletCollision -lLinearMath

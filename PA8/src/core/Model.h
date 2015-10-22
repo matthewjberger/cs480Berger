@@ -21,6 +21,7 @@ class Model
         void Translate(glm::vec3 position);
 
         glm::mat4 GetModelMatrix();
+        btTriangleMesh* GetCollisionMesh();
 
     private:
 
@@ -35,6 +36,10 @@ class Model
 
         Texture texture;
         bool textureLoaded;
+
+        // TODO: move this triangle mesh to the mesh class
+        // return a vector of triangle meshes corresponding to the loaded model's internal meshes
+        btTriangleMesh* collisionMesh;
 };
 
 #endif

@@ -3,6 +3,8 @@ using namespace std;
 
 Model::Model(string path, string texturePath, bool genMipMaps)
 {
+    collisionMesh = new btTriangleMesh();
+
     textureLoaded = false;
     LoadModel(path.c_str());
 
@@ -20,6 +22,9 @@ void Model::Free()
     {
         meshes[i].Free();
     }
+
+    delete collisionMesh;
+    collisionMesh = NULL;
 }
 
 void Model::Draw()
@@ -68,13 +73,18 @@ Mesh Model::ProcessMesh(aiMesh* mesh)
 {
     vector<Vertex> vertices;
     vector<GLuint> indices;
+    btVector3 triArray[3];
 
     for(unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         const aiFace& face = mesh->mFaces[i];
-        indices.push_back(face.mIndices[0]);
-        indices.push_back(face.mIndices[1]);
-        indices.push_back(face.mIndices[2]);
+        for(int j = 0; j < face.mNumIndices; j++)
+        {
+            aiVector3D position = mesh->mVertices[face.mIndices[j]];
+            triArray[j] = btVector3(position.x, position.y, position.z);
+            indices.push_back(face.mIndices[j]);
+        }
+        collisionMesh->addTriangle(triArray[0], triArray[1], triArray[2]);
     }
 
     for(unsigned int i = 0; i < indices.size(); i++)
@@ -125,5 +135,10 @@ void Model::Translate(glm::vec3 position)
 glm::mat4 Model::GetModelMatrix()
 {
     return modelMatrix;
+}
+
+btTriangleMesh* Model::GetCollisionMesh()
+{
+    return collisionMesh; // null
 }
 
