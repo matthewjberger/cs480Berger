@@ -21,7 +21,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/color4.h>
 
-#include <bullet/btBulletDynamicsCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 #include <iostream>
 #include <sstream>
