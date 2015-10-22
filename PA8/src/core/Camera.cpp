@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "Game.h"
 
-Camera::Camera(vec3 pos)
+Camera::Camera(vec3 pos, float speed)
 {
     // Get game instance
     Game *game = Game::GetInstance();
@@ -16,7 +16,7 @@ Camera::Camera(vec3 pos)
     verticalAngle    = 0.0f;
     initialFOV       = 45.0f;
     curFOV           = initialFOV;
-    speed            = 0.70f;
+    this->speed      = speed;
     pitchSensitivity = 0.005f;
     yawSensitivity   = 0.005f;
 

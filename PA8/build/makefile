@@ -14,7 +14,7 @@ SRC_DIR=../src
 SRC= $(shell find $(SRC_DIR) -name *.cpp)
 
 # Executable name
-EXE_NAME = Iceberg3D
+EXE_NAME = Bullet
 
 # INCLUDE_PATHS specifies the additional include paths we'll need
 INCLUDE_PATHS=$(shell sdl2-config --cflags)

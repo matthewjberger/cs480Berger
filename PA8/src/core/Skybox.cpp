@@ -28,7 +28,7 @@ Skybox::Skybox(string right, string left, string top, string bottom, string back
         // Check for errors
         if (image == NULL)
         {
-            printf("Couldn't load image %s./nIMG_Error: %s", faces[i], IMG_GetError());
+            printf("Couldn't load skybox image %s.\nIMG_Error: %s\n", faces[i], IMG_GetError());
             break;
         }
 

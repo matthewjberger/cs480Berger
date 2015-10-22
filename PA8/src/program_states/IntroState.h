@@ -5,6 +5,7 @@
 #include "../core/Camera.h"
 #include "../core/Texture.h"
 #include "../core/Model.h"
+#include "../core/Skybox.h"
 
 class IntroState : public GameState
 {
@@ -33,7 +34,14 @@ class IntroState : public GameState
         /**************************/
         /* Place State Items here */
         /**************************/
+        ShaderProgram shaderProgram;
 
+        Camera* camera;
+        Skybox *skybox;
+
+        Model* models[4];
+
+        Texture sunTexture;
 };
 
 

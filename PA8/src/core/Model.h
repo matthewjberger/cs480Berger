@@ -9,14 +9,22 @@
 class Model
 {
     public:
-        Model(std::string path);
+        Model(std::string path, std::string texturePath = "", bool genMipMaps = true);
         ~Model();
 
         void Draw();
         void LoadTexture(std::string image, bool genMipMaps);
         void Free();
 
+        void Scale(glm::vec3 scale);
+        void Rotate(float angle_in_degrees, glm::vec3 rotationAxes);
+        void Translate(glm::vec3 position);
+
+        glm::mat4 GetModelMatrix();
+
     private:
+
+        glm::mat4 modelMatrix;
 
         std::string directory;
         std::vector<Mesh> meshes;

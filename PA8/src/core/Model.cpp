@@ -1,10 +1,17 @@
 #include "Model.h"
 using namespace std;
 
-Model::Model(string path)
+Model::Model(string path, string texturePath, bool genMipMaps)
 {
     textureLoaded = false;
     LoadModel(path.c_str());
+
+    if(texturePath != "")
+    {
+        LoadTexture(texturePath, genMipMaps);
+    }
+
+    modelMatrix = glm::mat4(1.0f);
 }
 
 void Model::Free()
@@ -19,7 +26,8 @@ void Model::Draw()
 {
     for(GLuint i = 0; i < meshes.size(); i++)
     {
-        texture.Bind(0);
+        if(textureLoaded)
+            texture.Bind(0);
         meshes[i].Draw();
     }
 }
@@ -96,5 +104,26 @@ Mesh Model::ProcessMesh(aiMesh* mesh)
 void Model::LoadTexture(string image, bool genMipMaps)
 {
     texture.Load(image, genMipMaps);
+    textureLoaded = true;
+}
+
+void Model::Rotate(float angle_in_degrees, glm::vec3 rotationAxes)
+{
+    modelMatrix = glm::rotate(modelMatrix, angle_in_degrees, rotationAxes);
+}
+
+void Model::Scale(glm::vec3 scale)
+{
+    modelMatrix = glm::scale(modelMatrix, scale);
+}
+
+void Model::Translate(glm::vec3 position)
+{
+    modelMatrix = glm::translate(modelMatrix, position);
+}
+
+glm::mat4 Model::GetModelMatrix()
+{
+    return modelMatrix;
 }
 

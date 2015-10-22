@@ -13,8 +13,8 @@ Game::Game()
     window        = NULL;
     screenSurface = NULL;
 
-    screenWidth   = 640;
-    screenHeight  = 480;
+    screenWidth   = 800;
+    screenHeight  = 600;
 
     maxFPS        = 60;
 
@@ -39,7 +39,7 @@ bool Game::Initialize()
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        printf("SDL could not be initialized! SDL_Error: %s", SDL_GetError() );
+        printf("SDL could not be initialized!\n SDL_Error: %s\n", SDL_GetError() );
 
         return false;
     }
@@ -63,12 +63,12 @@ bool Game::Initialize()
         }
         else if (isFullscreen == false)
         {
-            window = SDL_CreateWindow(caption.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+            window = SDL_CreateWindow(caption.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
         }
 
         if (window == NULL)
         {
-            printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+            printf("Window could not be created!\n SDL_Error: %s\n", SDL_GetError());
 
             return false;
         }
@@ -79,7 +79,7 @@ bool Game::Initialize()
 
             if (context == NULL)
             {
-                printf("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
+                printf("OpenGL context could not be created!\n SDL_Error: %s\n", SDL_GetError());
 
                 return false;
             }
@@ -92,18 +92,11 @@ bool Game::Initialize()
 
                 // Depth testing
                 glEnable(GL_DEPTH_TEST);
-                glClearDepth(1.0);
-
-                // Enable culling
-                //glEnable(GL_CULL_FACE);
-                //glCullFace(GL_BACK);
-                //glFrontFace(GL_CW);
+                glDepthFunc(GL_LESS);
 
                 // Initialize GLEW
                 glewExperimental = GL_TRUE;
-
                 GLenum glewError = glewInit();
-
                 if (glewError != GLEW_OK)
                 {
                     printf("Error initializing GLEW! %s \n", glewGetErrorString(glewError));
@@ -255,7 +248,7 @@ void Game::ToggleFullScreen()
 {
     if (isFullscreen == false)
     {
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
 
         isFullscreen = true;
     }
@@ -323,6 +316,7 @@ float Game::GetTimeDelta()
 
 float Game::GetAspectRatio()
 {
+    SDL_GetWindowSize(window, &screenWidth, &screenHeight);
     // Prevent division by 0
     float adjustedScreenHeight = screenHeight;
     if(screenHeight == 0) adjustedScreenHeight = 1;
