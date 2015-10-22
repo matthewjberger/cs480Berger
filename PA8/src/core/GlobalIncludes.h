@@ -16,17 +16,19 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <chrono>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/color4.h>
+
+#include <bullet/btBulletDynamicsCommon.h>
 
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <chrono>
 
 using namespace std;
 using namespace glm;

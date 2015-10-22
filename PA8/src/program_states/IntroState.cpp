@@ -19,6 +19,7 @@ void IntroState::Initialize()
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+
     camera = new Camera(glm::vec3(0.0f, 8.0f, -16.0f));
 
 
@@ -30,7 +31,6 @@ void IntroState::Initialize()
                         "Assets/hw_blue/blue_ft.tga");
 
     // Transformations
-
     // Table
     models[0]->Scale(glm::vec3(10.0f, 6.0f, 10.0f));
 

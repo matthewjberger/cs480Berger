@@ -26,7 +26,7 @@ LIBRARY_PATHS=$(shell sdl2-config --libs)
 COMPILER_FLAGS = -w -std=c++11
 
 # Linker flags
-LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lGL -lGLEW -lassimp
+LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lGL -lGLEW -lassimp -lbullet
 
 # Target
 all: $(EXE_NAME)
