@@ -54,6 +54,26 @@ void IntroState::Initialize()
 
     // Add gravity
     dynamicsWorld->setGravity(btVector3(0, -9.81, 0));
+
+    // Add a static rigid body for the ground
+    btCollisionShape* shape = models[0]->GetCollisionShape();
+
+    btTransform groundTransform;
+    groundTransform.setIdentity();
+    groundTransform.setOrigin(btVector3(0.0f, 0.0f, 0.0f));
+    btDefaultMotionState* motionState = new btDefaultMotionState(groundTransform);
+    btScalar mass(0.0f);
+    btVector3 inertia(0.0f, 0.0f, 0.0f);
+    //shape->calculateLocalInertia(mass, localInertia);
+    btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, inertia);
+    btRigidBody* body = new btRigidBody(constructionInfo);
+    dynamicsWorld->addRigidBody(body);
+
+    //btCollisionShape* box = models[1]->GetCollisionShape();
+    //btTransform boxTransform;
+    //boxTransform.setIdentity();
+    //boxTransform.setOrigin(btVector3())
+
 }
 
 void IntroState::Finalize()
@@ -91,6 +111,21 @@ void IntroState::Update()
 {
     // Update logic
     camera->Update();
+    dynamicsWorld->stepSimulation(Game::GetInstance()->GetTimeDelta(), 10);
+    btTransform trans;
+    btScalar m[16];
+    for(size_t i = 0; i < dynamicsWorld->getNumCollisionObjects(); i++)
+    {
+        btRigidBody* object = btRigidBody::upcast(dynamicsWorld->getCollisionObjectArray()[i]);
+        object->getMotionState()->getWorldTransform(trans);
+        trans.getOpenGLMatrix(m);
+        switch(i)
+        {
+            case 0:
+                models[0]->SetModelMatrix(glm::make_mat4(m));
+                break;
+        }
+    }
 }
 
 void IntroState::Draw()
@@ -103,7 +138,7 @@ void IntroState::Draw()
 
     shaderProgram.UseProgram();
 
-    for(size_t i = 0; i < SIZE(models); i++)
+    for(size_t i = 0; i < SIZE(models) - 2; i++)
     {
         shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[i]->GetModelMatrix()));
         models[i]->Draw();

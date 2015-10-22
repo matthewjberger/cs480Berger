@@ -23,8 +23,17 @@ void Model::Free()
         meshes[i].Free();
     }
 
-    delete collisionMesh;
-    collisionMesh = NULL;
+    if(collisionMesh != NULL)
+    {
+        delete collisionMesh;
+        collisionMesh = NULL;
+    }
+
+    if(collisionShape != NULL)
+    {
+        delete collisionShape;
+        collisionShape = NULL;
+    }
 }
 
 void Model::Draw()
@@ -50,6 +59,7 @@ void Model::LoadModel(std::string path)
 
     directory = path.substr(0, path.find_last_of('/'));
     ProcessNode(scene->mRootNode, scene);
+   collisionShape = new btBvhTriangleMeshShape(collisionMesh, true);
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene)
@@ -122,9 +132,19 @@ void Model::Rotate(float angle_in_degrees, glm::vec3 rotationAxes)
     modelMatrix = glm::rotate(modelMatrix, angle_in_degrees, rotationAxes);
 }
 
+void Model::Rotate(glm::mat4 base, float angle_in_degrees, glm::vec3 rotationAxes)
+{
+    modelMatrix = glm::rotate(base, angle_in_degrees, rotationAxes);
+}
+
 void Model::Scale(glm::vec3 scale)
 {
     modelMatrix = glm::scale(modelMatrix, scale);
+}
+
+void Model::Scale(glm::mat4 base, glm::vec3 scale)
+{
+    modelMatrix = glm::scale(base, scale);
 }
 
 void Model::Translate(glm::vec3 position)
@@ -132,13 +152,23 @@ void Model::Translate(glm::vec3 position)
     modelMatrix = glm::translate(modelMatrix, position);
 }
 
+void Model::Translate(glm::mat4 base, glm::vec3 position)
+{
+    modelMatrix = glm::translate(base, position);
+}
+
 glm::mat4 Model::GetModelMatrix()
 {
     return modelMatrix;
 }
 
-btTriangleMesh* Model::GetCollisionMesh()
+btCollisionShape* Model::GetCollisionShape()
 {
-    return collisionMesh; // null
+    return collisionShape; // null
+}
+
+void Model::SetModelMatrix(glm::mat4 matrix)
+{
+    modelMatrix = matrix;
 }
 

@@ -42,6 +42,7 @@ Skybox::Skybox(string right, string left, string top, string bottom, string back
         }
 
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixelMode, image->w, image->h, 0, pixelMode, GL_UNSIGNED_BYTE, image->pixels);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
         SDL_FreeSurface(image);
         image = NULL;
