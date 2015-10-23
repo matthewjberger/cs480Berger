@@ -9,7 +9,7 @@ void IntroState::Initialize()
     // Initialize resources
     models[0] = new Model("Assets/pill.obj",     "Assets/wood.jpg");
     models[1] = new Model("Assets/cube.obj",     "Assets/crate.jpg");
-    models[2] = new Model("Assets/pyramid.obj",  "Assets/blue.jpg");
+    models[2] = new Model("Assets/sphere.obj",   "Assets/blue.jpg");
     models[3] = new Model("Assets/cylinder.obj", "Assets/green.jpg");
 
     shaderProgram.CreateProgram();
@@ -20,7 +20,7 @@ void IntroState::Initialize()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    camera = new Camera(glm::vec3(0.0f, 10.0f, 0.0f), 0.7f, M_PI, -1 * M_PI );
+    camera = new Camera(glm::vec3(0.0f, 12.0f, 8.0f), 0.7f, M_PI, -1);
 
 
     skybox = new Skybox("Assets/hw_blue/blue_rt.tga",
@@ -33,18 +33,29 @@ void IntroState::Initialize()
     physicsManager = new PhysicsManager();
 
     // Generate collision shapes
-    btCollisionShape* floorShape = new btBoxShape(btVector3(3.0f, 0.1f, 3.0f));
+    btCollisionShape* floorShape = new btStaticPlaneShape(btVector3(0, 1, 0), -1);
+    //btCollisionShape* leftWall   = new btStaticPlaneShape(btVector3(0, 0, 1), -6);
+    //btCollisionShape* rightWall  = new btStaticPlaneShape(btVector3(-1, 0, 0),-6);
+    //btCollisionShape* frontWall  = new btStaticPlaneShape(btVector3(0, 0, 1), -6);
+    //btCollisionShape* backWall   = new btStaticPlaneShape(btVector3(0, 0, -1), -6);
 
-    btCollisionShape* boxShape   = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+    btCollisionShape* boxShape    = new btBoxShape(btVector3(1,1,1));
+    btCollisionShape* sphereShape = new btSphereShape(1.0f);
 
     // Add floor
-    physicsManager->AddRigidBody(floorShape,
-                                 btVector3(0.0f, -6.0f, 0.0f),
-                                 btScalar(0.0f));
+    physicsManager->AddRigidBody(floorShape);
+    //physicsManager->AddRigidBody(leftWall);
+    //physicsManager->AddRigidBody(rightWall);
+    //physicsManager->AddRigidBody(frontWall);
+    //physicsManager->AddRigidBody(backWall);
 
     physicsManager->AddRigidBody(boxShape,
-                                 btVector3(0.0f, -2.0f, 0.0f),
+                                 btVector3(0.0f, 10.0f, 0.0f),
                                  btScalar(1.0f));
+
+    physicsManager->AddRigidBody(sphereShape,
+                                 btVector3(0.0f, 14.0f, 0.0f),
+                                 btScalar(0.2f));
 }
 
 void IntroState::Finalize()
@@ -73,6 +84,7 @@ void IntroState::Update()
     physicsManager->Update();
     models[0]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(0));
     models[1]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(1));
+    models[2]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(2));
 }
 
 void IntroState::Draw()
@@ -83,7 +95,7 @@ void IntroState::Draw()
 
     skybox->Draw(camera->projectionMatrix, camera->viewMatrix);
     shaderProgram.UseProgram();
-    for(size_t i = 0; i < SIZE(models) - 2; i++)
+    for(size_t i = 0; i < SIZE(models); i++)
     {
         shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[i]->GetModelMatrix()));
         models[i]->Draw();

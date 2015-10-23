@@ -23,6 +23,8 @@ class Camera
         glm::mat4 projectionMatrix;
         glm::mat4 viewMatrix;
 
+        void UseInput(bool enabled);
+
     private:
 
         vec3 position;
@@ -44,6 +46,8 @@ class Camera
         int mouseY;
 
         bool forward;
+
+        bool inputEnabled;
 
 };
 

@@ -10,7 +10,7 @@ Camera::Camera(vec3 pos, float speed, float horizontalAngle, float verticalAngle
     position  = pos;
     direction = vec3(0, 0, 0);
     right     = vec3(0, 0, 0);
-    up        = vec3(0, 0, 0);
+    up        = vec3(0, 1, 0);
 
     this->horizontalAngle  = horizontalAngle;
     this->verticalAngle    = verticalAngle;
@@ -30,6 +30,34 @@ Camera::Camera(vec3 pos, float speed, float horizontalAngle, float verticalAngle
 
     // Hide the mouse
     SDL_ShowCursor(SDL_DISABLE);
+
+    inputEnabled = false;
+
+    // 1.55f radians is 89 degrees, which is a reasonable vertical constraint
+    if(verticalAngle > 1.55f)
+        verticalAngle = 1.55f;
+    else if(verticalAngle < -1.55f)
+        verticalAngle = -1.55f;
+
+    // Set new direction by converting spherical coordinates to cartesian
+    direction = vec3(
+            cos(verticalAngle) * sin(horizontalAngle),
+            sin(verticalAngle),
+            cos(verticalAngle) * cos(horizontalAngle)
+            );
+
+    // Calculate right vector
+    right = vec3(
+            sin(horizontalAngle - pi<float>() / 2),
+            0,
+            cos(horizontalAngle - pi<float>() / 2)
+            );
+
+    // Calculate up vector
+    up = cross(right, direction);
+
+    projectionMatrix = perspective(initialFOV, Game::GetInstance()->GetAspectRatio(), 0.1f, 1000.0f);
+    viewMatrix       = lookAt(position, position + direction, up);
 }
 
 Camera::~Camera()
@@ -38,6 +66,9 @@ Camera::~Camera()
 
 void Camera::Update()
 {
+    if(!inputEnabled)
+        return;
+
     projectionMatrix = mat4(1.0f);
     viewMatrix       = mat4(1.0f);
 
@@ -135,5 +166,9 @@ glm::mat4 Camera::GetMVP(glm::mat4 modelMatrix)
 {
     glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
     return mvpMatrix;
+}
+void Camera::UseInput(bool enabled)
+{
+    inputEnabled = enabled;
 }
 

@@ -36,17 +36,14 @@ PhysicsManager::~PhysicsManager()
 
 }
 
-void PhysicsManager::AddRigidBody(btCollisionShape* collisionShape, btVector3 origin, btScalar mass, btVector3 inertia, bool kinematic)
+void PhysicsManager::AddRigidBody(btCollisionShape* collisionShape, btVector3 origin, btScalar mass, btScalar restitution, btVector3 inertia, bool kinematic)
 {
-    btTransform bodyTransform;
-    bodyTransform.setIdentity();
-    bodyTransform.setOrigin(origin);
-    btDefaultMotionState* motionState = new btDefaultMotionState(bodyTransform);
+    btDefaultMotionState* motionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), origin));
     if(mass > 0)
         collisionShape->calculateLocalInertia(mass, inertia);
     btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, collisionShape, inertia);
     btRigidBody* body = new btRigidBody(constructionInfo);
-    body->setRestitution(btScalar(1.0f));
+    //body->setRestitution(restitution);
     if(kinematic)
     {
         body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
