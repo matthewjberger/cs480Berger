@@ -33,9 +33,9 @@ void IntroState::Initialize()
     physicsManager = new PhysicsManager();
 
     // Generate collision shapes
-    btCollisionShape* boxShape      = new btBoxShape(btVector3(1,1,1));
+    btCollisionShape* boxShape      = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
     btCollisionShape* sphereShape   = new btSphereShape(1.2f);
-    btCollisionShape* cylinderShape = new btCylinderShape(btVector3(1, 0.5, 10));
+    btCollisionShape* cylinderShape = new btCylinderShapeZ(btVector3(1, 0.5, 5));
 
     // Add floor
     physicsManager->AddRigidBody(models[0]->GetCollisionShape());
@@ -48,12 +48,12 @@ void IntroState::Initialize()
             true);                       // kinematic
 
     physicsManager->AddRigidBody(sphereShape,
-            btVector3(1.0f, 14.0f, 0.0f),
+            btVector3(-1.0f, 7.0f, 0.0f),
             btScalar(2.0f),
             btScalar(0.3f));
 
     physicsManager->AddRigidBody(sphereShape,
-            btVector3(-1.0f, 13.0f, 0.0f),
+            btVector3(1.0f, 5.0f, 0.0f),
             btScalar(1.0f),
             btScalar(0.3f));
 }
@@ -77,6 +77,49 @@ void IntroState::Finalize()
 
 void IntroState::HandleEvents()
 {
+    SDL_Event event = Game::GetInstance()->GetEvent();
+    if(event.type == SDL_KEYDOWN)
+    {
+        switch(event.key.keysym.sym)
+        {
+            case SDLK_SPACE:
+                physicsManager->ApplyForceAtIndex(btVector3(0, 6, 0), 2);
+                physicsManager->ApplyForceAtIndex(btVector3(0, 6, 0), 3);
+                break;
+
+            case SDLK_w:
+                physicsManager->ApplyForceAtIndex(btVector3(0, 0, -10), 2);
+                break;
+
+            case SDLK_a:
+                physicsManager->ApplyForceAtIndex(btVector3(-10, 0, 0), 2);
+                break;
+
+            case SDLK_s:
+                physicsManager->ApplyForceAtIndex(btVector3(0, 0, 10), 2);
+                break;
+
+            case SDLK_d:
+                physicsManager->ApplyForceAtIndex(btVector3(10, 0, 0), 2);
+                break;
+
+            case SDLK_UP:
+                physicsManager->ApplyForceAtIndex(btVector3(0, 0, -10), 3);
+                break;
+
+            case SDLK_DOWN:
+                physicsManager->ApplyForceAtIndex(btVector3(0, 0, 10), 3);
+                break;
+
+            case SDLK_LEFT:
+                physicsManager->ApplyForceAtIndex(btVector3(-10, 0, 0), 3);
+                break;
+
+            case SDLK_RIGHT:
+                physicsManager->ApplyForceAtIndex(btVector3(10, 0, 0), 3);
+                break;
+        }
+    }
 }
 
 void IntroState::Update()

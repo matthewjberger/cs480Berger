@@ -28,6 +28,8 @@ class PhysicsManager
 
         void Update();
 
+        void ApplyForceAtIndex(btVector3 force, int index);
+
     private:
 
         btBroadphaseInterface* broadphase;

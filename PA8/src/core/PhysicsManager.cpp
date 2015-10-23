@@ -44,10 +44,11 @@ void PhysicsManager::AddRigidBody(btCollisionShape* collisionShape, btVector3 or
     btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, collisionShape, inertia);
     btRigidBody* body = new btRigidBody(constructionInfo);
     body->setRestitution(restitution);
+    body->setActivationState(DISABLE_DEACTIVATION);
     if(kinematic)
     {
         body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-        body->setActivationState(DISABLE_DEACTIVATION);
+        //body->setActivationState(DISABLE_DEACTIVATION);
     }
     dynamicsWorld->addRigidBody(body);
 }
@@ -77,5 +78,19 @@ glm::mat4 PhysicsManager::GetModelMatrixAtIndex(int index)
 void PhysicsManager::Update()
 {
     dynamicsWorld->stepSimulation(Game::GetInstance()->GetTimeDelta(), 1);
+}
+
+void PhysicsManager::ApplyForceAtIndex(btVector3 force, int index)
+{
+    if(index < 0 || index >= GetNumObjects())
+    {
+        cout << "ERROR! PhysicsManager::ApplyForceAtIndex tried to access: " << index << " which is not between 0 and " << GetNumObjects() << "." << endl;
+        return;
+    }
+
+    btRigidBody* object = btRigidBody::upcast(dynamicsWorld->getCollisionObjectArray()[index]);
+    object->applyCentralImpulse(force);
+    object->clearForces();
+
 }
 
