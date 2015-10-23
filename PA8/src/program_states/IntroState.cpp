@@ -24,38 +24,38 @@ void IntroState::Initialize()
 
 
     skybox = new Skybox("Assets/hw_blue/blue_rt.tga",
-                        "Assets/hw_blue/blue_lf.tga",
-                        "Assets/hw_blue/blue_up.tga",
-                        "Assets/hw_blue/blue_dn.tga",
-                        "Assets/hw_blue/blue_bk.tga",
-                        "Assets/hw_blue/blue_ft.tga");
+            "Assets/hw_blue/blue_lf.tga",
+            "Assets/hw_blue/blue_up.tga",
+            "Assets/hw_blue/blue_dn.tga",
+            "Assets/hw_blue/blue_bk.tga",
+            "Assets/hw_blue/blue_ft.tga");
 
     physicsManager = new PhysicsManager();
 
     // Generate collision shapes
-    btCollisionShape* floorShape = new btStaticPlaneShape(btVector3(0, 1, 0), -1);
-    //btCollisionShape* leftWall   = new btStaticPlaneShape(btVector3(0, 0, 1), -6);
-    //btCollisionShape* rightWall  = new btStaticPlaneShape(btVector3(-1, 0, 0),-6);
-    //btCollisionShape* frontWall  = new btStaticPlaneShape(btVector3(0, 0, 1), -6);
-    //btCollisionShape* backWall   = new btStaticPlaneShape(btVector3(0, 0, -1), -6);
-
-    btCollisionShape* boxShape    = new btBoxShape(btVector3(1,1,1));
-    btCollisionShape* sphereShape = new btSphereShape(1.0f);
+    btCollisionShape* boxShape      = new btBoxShape(btVector3(1,1,1));
+    btCollisionShape* sphereShape   = new btSphereShape(1.2f);
+    btCollisionShape* cylinderShape = new btCylinderShape(btVector3(1, 0.5, 10));
 
     // Add floor
-    physicsManager->AddRigidBody(floorShape);
-    //physicsManager->AddRigidBody(leftWall);
-    //physicsManager->AddRigidBody(rightWall);
-    //physicsManager->AddRigidBody(frontWall);
-    //physicsManager->AddRigidBody(backWall);
+    physicsManager->AddRigidBody(models[0]->GetCollisionShape());
 
     physicsManager->AddRigidBody(boxShape,
-                                 btVector3(0.0f, 10.0f, 0.0f),
-                                 btScalar(1.0f));
+            btVector3(0.0f, 1.0f, 0.0f), // origin
+            btScalar(0.0f),              // mass
+            btScalar(1.0f),              // restitution
+            btVector3(0.0f, 0.0f, 0.0f), // inertia
+            true);                       // kinematic
 
     physicsManager->AddRigidBody(sphereShape,
-                                 btVector3(0.0f, 14.0f, 0.0f),
-                                 btScalar(0.2f));
+            btVector3(1.0f, 14.0f, 0.0f),
+            btScalar(2.0f),
+            btScalar(0.3f));
+
+    physicsManager->AddRigidBody(sphereShape,
+            btVector3(-1.0f, 13.0f, 0.0f),
+            btScalar(1.0f),
+            btScalar(0.3f));
 }
 
 void IntroState::Finalize()
@@ -75,7 +75,9 @@ void IntroState::Finalize()
     physicsManager = NULL;
 }
 
-void IntroState::HandleEvents(){}
+void IntroState::HandleEvents()
+{
+}
 
 void IntroState::Update()
 {
@@ -85,6 +87,7 @@ void IntroState::Update()
     models[0]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(0));
     models[1]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(1));
     models[2]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(2));
+    models[3]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(3));
 }
 
 void IntroState::Draw()

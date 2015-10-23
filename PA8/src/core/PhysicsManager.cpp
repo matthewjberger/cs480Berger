@@ -43,7 +43,7 @@ void PhysicsManager::AddRigidBody(btCollisionShape* collisionShape, btVector3 or
         collisionShape->calculateLocalInertia(mass, inertia);
     btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, collisionShape, inertia);
     btRigidBody* body = new btRigidBody(constructionInfo);
-    //body->setRestitution(restitution);
+    body->setRestitution(restitution);
     if(kinematic)
     {
         body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
@@ -76,6 +76,6 @@ glm::mat4 PhysicsManager::GetModelMatrixAtIndex(int index)
 
 void PhysicsManager::Update()
 {
-    dynamicsWorld->stepSimulation(Game::GetInstance()->GetTimeDelta(), 10);
+    dynamicsWorld->stepSimulation(Game::GetInstance()->GetTimeDelta(), 1);
 }
 
