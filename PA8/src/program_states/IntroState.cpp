@@ -31,12 +31,19 @@ void IntroState::Initialize()
                         "Assets/hw_blue/blue_ft.tga");
 
     physicsManager = new PhysicsManager();
-    physicsManager->AddRigidBody(models[0]->GetCollisionShape(),
-                                 btVector3(0.0f, 0.0f, 0.0f),
+
+    // Generate collision shapes
+    btCollisionShape* floorShape = new btBoxShape(btVector3(3.0f, 0.1f, 3.0f));
+
+    btCollisionShape* boxShape   = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+
+    // Add floor
+    physicsManager->AddRigidBody(floorShape,
+                                 btVector3(0.0f, -6.0f, 0.0f),
                                  btScalar(0.0f));
 
-    physicsManager->AddRigidBody(models[1]->GetCollisionShape(),
-                                 btVector3(0.0f, 4.0f, 0.0f),
+    physicsManager->AddRigidBody(boxShape,
+                                 btVector3(0.0f, -2.0f, 0.0f),
                                  btScalar(1.0f));
 }
 
