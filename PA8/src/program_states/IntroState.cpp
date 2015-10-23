@@ -30,43 +30,14 @@ void IntroState::Initialize()
                         "Assets/hw_blue/blue_bk.tga",
                         "Assets/hw_blue/blue_ft.tga");
 
-    // Initialize Bullet
-    broadphase             = new btDbvtBroadphase();
-    collisionConfiguration = new btDefaultCollisionConfiguration();
-    dispatcher             = new btCollisionDispatcher(collisionConfiguration);
-    solver                 = new btSequentialImpulseConstraintSolver();
-    dynamicsWorld          = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    physicsManager = new PhysicsManager();
+    physicsManager->AddRigidBody(models[0]->GetCollisionShape(),
+                                 btVector3(0.0f, 0.0f, 0.0f),
+                                 btScalar(0.0f));
 
-    // Add gravity
-    dynamicsWorld->setGravity(btVector3(0, -9.81, 0));
-
-    // Add a static rigid body for the ground
-    btCollisionShape* shape = models[0]->GetCollisionShape();
-    btTransform groundTransform;
-    groundTransform.setIdentity();
-    groundTransform.setOrigin(btVector3(0.0f, 0.0f, 0.0f));
-    btDefaultMotionState* motionState = new btDefaultMotionState(groundTransform);
-    btScalar mass(0.0f);
-    btVector3 inertia(0.0f, 0.0f, 0.0f);
-    btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, inertia);
-    btRigidBody* body = new btRigidBody(constructionInfo);
-    body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-    body->setActivationState(DISABLE_DEACTIVATION);
-    dynamicsWorld->addRigidBody(body, COLLIDE_GROUND, COLLIDE_OBJECT);
-
-    //btCollisionShape* box = models[1]->GetCollisionShape();
-    btCollisionShape* box = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
-    btTransform boxTransform;
-    boxTransform.setIdentity();
-    boxTransform.setOrigin(btVector3(0.0f, 4.0f, 0.0f));
-    btDefaultMotionState* boxMotionState = new btDefaultMotionState(boxTransform);
-    btScalar boxMass(1.0f);
-    btVector3 boxInertia(0.0f, 0.0f, 0.0f);
-    box->calculateLocalInertia(boxMass, boxInertia);
-    btRigidBody::btRigidBodyConstructionInfo boxConstructionInfo(boxMass, boxMotionState, box, boxInertia);
-    btRigidBody* boxBody = new btRigidBody(boxConstructionInfo);
-    dynamicsWorld->addRigidBody(boxBody, COLLIDE_OBJECT, COLLIDE_GROUND);
-
+    physicsManager->AddRigidBody(models[1]->GetCollisionShape(),
+                                 btVector3(0.0f, 4.0f, 0.0f),
+                                 btScalar(1.0f));
 }
 
 void IntroState::Finalize()
@@ -78,42 +49,23 @@ void IntroState::Finalize()
     }
     shaderProgram.DeleteProgram();
     delete camera;
-    camera = NULL;
     delete skybox;
-    skybox = NULL;
+    delete physicsManager;
 
-    // Free Bullet
-    delete broadphase;
-    delete collisionConfiguration;
-    delete dispatcher;
-    delete solver;
-    delete dynamicsWorld;
-
-    broadphase             = NULL;
-    collisionConfiguration = NULL;
-    dispatcher             = NULL;
-    solver                 = NULL;
-    dynamicsWorld          = NULL;
+    camera         = NULL;
+    skybox         = NULL;
+    physicsManager = NULL;
 }
 
-void IntroState::HandleEvents()
-{
-}
+void IntroState::HandleEvents(){}
 
 void IntroState::Update()
 {
     // Update logic
     camera->Update();
-    dynamicsWorld->stepSimulation(Game::GetInstance()->GetTimeDelta(), 10);
-    btTransform trans;
-    btScalar m[16];
-    for(size_t i = 0; i < dynamicsWorld->getNumCollisionObjects(); i++)
-    {
-        btRigidBody* object = btRigidBody::upcast(dynamicsWorld->getCollisionObjectArray()[i]);
-        object->getMotionState()->getWorldTransform(trans);
-        trans.getOpenGLMatrix(m);
-        models[i]->SetModelMatrix(glm::make_mat4(m));
-    }
+    physicsManager->Update();
+    models[0]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(0));
+    models[1]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(1));
 }
 
 void IntroState::Draw()
@@ -123,9 +75,7 @@ void IntroState::Draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     skybox->Draw(camera->projectionMatrix, camera->viewMatrix);
-
     shaderProgram.UseProgram();
-
     for(size_t i = 0; i < SIZE(models) - 2; i++)
     {
         shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[i]->GetModelMatrix()));
