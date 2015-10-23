@@ -12,3 +12,6 @@ To install the dependencies run the install_dependencies.sh script.
 WASD to control the sphere.
 Arrow keys to control the cylinder.
 Spacebar will make the objects "jump".
+
+## Notes
+The collision shapes for the sphere, cylinder, and cube aren't very tight for this demo but can be easily adjusted.
