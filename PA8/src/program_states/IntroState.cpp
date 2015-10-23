@@ -20,7 +20,7 @@ void IntroState::Initialize()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    camera = new Camera(glm::vec3(0.0f, 8.0f, -16.0f));
+    camera = new Camera(glm::vec3(0.0f, 10.0f, 0.0f), 0.7f, M_PI, -1 * M_PI );
 
 
     skybox = new Skybox("Assets/hw_blue/blue_rt.tga",
@@ -29,21 +29,6 @@ void IntroState::Initialize()
                         "Assets/hw_blue/blue_dn.tga",
                         "Assets/hw_blue/blue_bk.tga",
                         "Assets/hw_blue/blue_ft.tga");
-
-    // Transformations
-    // Table
-    models[0]->Scale(glm::vec3(10.0f, 6.0f, 10.0f));
-
-    // Cube
-    models[1]->Translate(glm::vec3(-8.0f, 2.0f, 10.0f));
-    models[1]->Scale(glm::vec3(3.0f, 3.0f, 3.0f));
-
-    // Pyramid
-    models[2]->Translate(glm::vec3(0.0f, 4.0f, 10.0f));
-
-    // Cylinder
-    models[3]->Translate(glm::vec3(8.0f, 4.0f, 10.0f));
-    models[3]->Scale(glm::vec3(3.0f, 3.0f, 3.0f));
 
     // Initialize Bullet
     broadphase             = new btDbvtBroadphase();
@@ -57,22 +42,30 @@ void IntroState::Initialize()
 
     // Add a static rigid body for the ground
     btCollisionShape* shape = models[0]->GetCollisionShape();
-
     btTransform groundTransform;
     groundTransform.setIdentity();
     groundTransform.setOrigin(btVector3(0.0f, 0.0f, 0.0f));
     btDefaultMotionState* motionState = new btDefaultMotionState(groundTransform);
     btScalar mass(0.0f);
     btVector3 inertia(0.0f, 0.0f, 0.0f);
-    //shape->calculateLocalInertia(mass, localInertia);
     btRigidBody::btRigidBodyConstructionInfo constructionInfo(mass, motionState, shape, inertia);
     btRigidBody* body = new btRigidBody(constructionInfo);
-    dynamicsWorld->addRigidBody(body);
+    body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+    body->setActivationState(DISABLE_DEACTIVATION);
+    dynamicsWorld->addRigidBody(body, COLLIDE_GROUND, COLLIDE_OBJECT);
 
     //btCollisionShape* box = models[1]->GetCollisionShape();
-    //btTransform boxTransform;
-    //boxTransform.setIdentity();
-    //boxTransform.setOrigin(btVector3())
+    btCollisionShape* box = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+    btTransform boxTransform;
+    boxTransform.setIdentity();
+    boxTransform.setOrigin(btVector3(0.0f, 4.0f, 0.0f));
+    btDefaultMotionState* boxMotionState = new btDefaultMotionState(boxTransform);
+    btScalar boxMass(1.0f);
+    btVector3 boxInertia(0.0f, 0.0f, 0.0f);
+    box->calculateLocalInertia(boxMass, boxInertia);
+    btRigidBody::btRigidBodyConstructionInfo boxConstructionInfo(boxMass, boxMotionState, box, boxInertia);
+    btRigidBody* boxBody = new btRigidBody(boxConstructionInfo);
+    dynamicsWorld->addRigidBody(boxBody, COLLIDE_OBJECT, COLLIDE_GROUND);
 
 }
 
@@ -119,12 +112,7 @@ void IntroState::Update()
         btRigidBody* object = btRigidBody::upcast(dynamicsWorld->getCollisionObjectArray()[i]);
         object->getMotionState()->getWorldTransform(trans);
         trans.getOpenGLMatrix(m);
-        switch(i)
-        {
-            case 0:
-                models[0]->SetModelMatrix(glm::make_mat4(m));
-                break;
-        }
+        models[i]->SetModelMatrix(glm::make_mat4(m));
     }
 }
 

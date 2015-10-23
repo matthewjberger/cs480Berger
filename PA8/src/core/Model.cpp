@@ -14,6 +14,7 @@ Model::Model(string path, string texturePath, bool genMipMaps)
     }
 
     modelMatrix = glm::mat4(1.0f);
+    collisionShape = new btBvhTriangleMeshShape(collisionMesh, true);
 }
 
 void Model::Free()
@@ -59,7 +60,6 @@ void Model::LoadModel(std::string path)
 
     directory = path.substr(0, path.find_last_of('/'));
     ProcessNode(scene->mRootNode, scene);
-   collisionShape = new btBvhTriangleMeshShape(collisionMesh, true);
 }
 
 void Model::ProcessNode(aiNode* node, const aiScene* scene)

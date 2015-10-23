@@ -67,6 +67,13 @@ class IntroState : public GameState
         // Create a physics world
         // Takes in all the parameters listed above
         btDiscreteDynamicsWorld* dynamicsWorld;
+
+        enum collisionTypes
+        {
+            COLLIDE_NOTHING = 0,
+            COLLIDE_GROUND  = 1,
+            COLLIDE_OBJECT  = 2
+        };
 };
 
 

@@ -133,7 +133,7 @@ void Skybox::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 
     skyboxVAO.Bind();
 
-    glActiveTexture(GL_TEXTURE0);
+    //glActiveTexture(GL_TEXTURE0);
     skyboxProgram.SetUniform("skybox", 0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     glDrawArrays(GL_TRIANGLES, 0, 36);
