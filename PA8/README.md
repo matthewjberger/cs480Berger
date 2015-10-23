@@ -1,4 +1,4 @@
-PA8 - Bullet
+# PA8 - Bullet
 
 ## Extra Credit
 Triangle meshes can only be used for static objects.
