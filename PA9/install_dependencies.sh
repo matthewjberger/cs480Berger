@@ -6,3 +6,4 @@ sudo apt-get install -y libglew-dev
 sudo apt-get install -y libglm-dev
 sudo apt-get install -y libassimp-dev
 sudo apt-get install -y libbullet-dev
+sudo apt-get install -y libfreetype6-dev
