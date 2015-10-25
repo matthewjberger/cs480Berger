@@ -1,6 +1,9 @@
 #include "Camera.h"
 #include "Game.h"
 
+using namespace glm;
+using namespace std;
+
 Camera::Camera(vec3 pos, float speed, float horizontalAngle, float verticalAngle)
 {
     // Get game instance

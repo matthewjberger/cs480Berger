@@ -1,6 +1,9 @@
 #include "PhysicsManager.h"
 #include "Game.h"
 
+using namespace std;
+using namespace glm;
+
 PhysicsManager::PhysicsManager()
 {
     // Initialize Bullet

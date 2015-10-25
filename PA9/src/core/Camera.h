@@ -7,7 +7,7 @@ class Camera
 {
     public:
 
-        Camera(vec3 pos = vec3(0.0f), float speed = 0.7, float horizontalAngle = M_PI, float verticalAngle = 0.0f);
+        Camera(glm::vec3 pos = glm::vec3(0.0f), float speed = 0.7, float horizontalAngle = M_PI, float verticalAngle = 0.0f);
         ~Camera();
 
         void Update();
@@ -27,10 +27,10 @@ class Camera
 
     private:
 
-        vec3 position;
-        vec3 direction;
-        vec3 right;
-        vec3 up;
+        glm::vec3 position;
+        glm::vec3 direction;
+        glm::vec3 right;
+        glm::vec3 up;
 
         float horizontalAngle;
         float verticalAngle;
