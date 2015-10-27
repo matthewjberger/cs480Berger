@@ -60,3 +60,9 @@ void VBO::UploadData(GLenum drawingHint)
     data.clear();
 }
 
+void VBO::UpdateData(GLintptr offset, GLsizeiptr size, const GLvoid* data)
+{
+    // Update subset of the VBO's data store
+    glBufferSubData(type, offset, size, data);
+}
+

@@ -7,6 +7,7 @@
 #include "../core/Model.h"
 #include "../core/Skybox.h"
 #include "../core/PhysicsManager.h"
+#include "../core/TextManager.h"
 
 class IntroState : public GameState
 {
@@ -41,6 +42,7 @@ class IntroState : public GameState
         Model* models[4];
         Texture sunTexture;
         PhysicsManager* physicsManager;
+        TextManager* textManager;
 };
 
 

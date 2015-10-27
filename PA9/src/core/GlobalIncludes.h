@@ -26,15 +26,17 @@
 // Bullet
 #include <btBulletDynamicsCommon.h>
 
+// Freetype
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 // Standard libraries
 #include <iostream>
+#include <map>
 #include <sstream>
 #include <fstream>
 #include <string>
 #include <vector>
 #include <chrono>
-
-//using namespace std;
-//using namespace glm;
 
 #endif

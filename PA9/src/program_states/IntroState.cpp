@@ -56,6 +56,9 @@ void IntroState::Initialize()
             btVector3(1.0f, 5.0f, 0.0f),
             btScalar(1.0f),
             btScalar(0.3f));
+
+    textManager = new TextManager();
+
 }
 
 void IntroState::Finalize()
@@ -69,10 +72,12 @@ void IntroState::Finalize()
     delete camera;
     delete skybox;
     delete physicsManager;
+    delete textManager;
 
     camera         = NULL;
     skybox         = NULL;
     physicsManager = NULL;
+    textManager    = NULL;
 }
 
 void IntroState::HandleEvents()
@@ -146,5 +151,10 @@ void IntroState::Draw()
         shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[i]->GetModelMatrix()));
         models[i]->Draw();
     }
+    glClearColor(0.0, 0.0, 0.2, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+    textManager->RenderText("HEY REECE IT WORKED!!!!", 100, 100, 4, glm::vec3(1.0f, 1.0f, 1.0f));
 }
 

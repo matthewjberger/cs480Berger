@@ -29,6 +29,8 @@ class VBO
         // Uploads data
         void UploadData(GLenum drawingHint = GL_STATIC_DRAW);
 
+        void UpdateData(GLintptr offset, GLsizeiptr size, const GLvoid* data);
+
     private:
 
         // The buffer
