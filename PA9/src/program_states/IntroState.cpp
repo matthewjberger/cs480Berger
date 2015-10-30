@@ -7,7 +7,7 @@ IntroState *IntroState::inst = 0;
 void IntroState::Initialize()
 {
     // Initialize resources
-    models[0] = new Model("Assets/pill.obj",     "Assets/wood.jpg");
+    models[0] = new Model("Assets/table.max",     "Assets/wood.jpg");
     models[1] = new Model("Assets/cube.obj",     "Assets/crate.jpg");
     models[2] = new Model("Assets/sphere.obj",   "Assets/blue.jpg");
     models[3] = new Model("Assets/cylinder.obj", "Assets/green.jpg");
