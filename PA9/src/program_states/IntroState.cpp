@@ -7,10 +7,9 @@ IntroState *IntroState::inst = 0;
 void IntroState::Initialize()
 {
     // Initialize resources
-    models[0] = new Model("Assets/table.max",     "Assets/wood.jpg");
-    models[1] = new Model("Assets/cube.obj",     "Assets/crate.jpg");
-    models[2] = new Model("Assets/sphere.obj",   "Assets/blue.jpg");
-    models[3] = new Model("Assets/cylinder.obj", "Assets/green.jpg");
+    models[0] = new Model("Assets/hockey/Table.obj", "Assets/hockey/wood.jpg");
+    models[1] = new Model("Assets/hockey/Paddle.obj","Assets/hockey/whiteplastic.jpg");
+    models[2] = new Model("Assets/hockey/puck.obj",  "Assets/hockey/puck.jpg");
 
     shaderProgram.CreateProgram();
     shaderProgram.AddShaderFromFile("Shaders/modelVert.glsl", GL_VERTEX_SHADER);
@@ -21,6 +20,7 @@ void IntroState::Initialize()
     glDepthFunc(GL_LESS);
 
     camera = new Camera(glm::vec3(0.0f, 12.0f, 8.0f), 0.7f, M_PI, -1);
+    camera->UseInput(true);
 
 
     skybox = new Skybox("Assets/hw_blue/blue_rt.tga",
@@ -33,28 +33,25 @@ void IntroState::Initialize()
     physicsManager = new PhysicsManager();
 
     // Generate collision shapes
-    btCollisionShape* boxShape      = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
-    btCollisionShape* sphereShape   = new btSphereShape(1.2f);
-    btCollisionShape* cylinderShape = new btCylinderShapeZ(btVector3(1, 0.5, 5));
+    btCollisionShape* paddle_1 = new btCylinderShape(btVector3(1, 0.5, 5)); // TODO: These need to be modified to match actual dimensions of paddles and puck
+    btCollisionShape* paddle_2 = new btCylinderShape(btVector3(1, 0.5, 5));
+    btCollisionShape* puck     = new btCylinderShape(btVector3(1, 0.5, 5));
 
     // Add floor
     physicsManager->AddRigidBody(models[0]->GetCollisionShape());
 
-    physicsManager->AddRigidBody(boxShape,
-            btVector3(0.0f, 1.0f, 0.0f), // origin
-            btScalar(0.0f),              // mass
-            btScalar(1.0f),              // restitution
-            btVector3(0.0f, 0.0f, 0.0f), // inertia
-            true);                       // kinematic
+    physicsManager->AddRigidBody(paddle_1,
+            btVector3(0.0f, 4.0f, 0.0f), // origin
+            btScalar(1.0f));
 
-    physicsManager->AddRigidBody(sphereShape,
-            btVector3(-1.0f, 7.0f, 0.0f),
-            btScalar(2.0f),
+    physicsManager->AddRigidBody(paddle_2,
+            btVector3(-1.0f, 4.0f, 0.0f),
+            btScalar(1.0f),
             btScalar(0.3f));
 
-    physicsManager->AddRigidBody(sphereShape,
-            btVector3(1.0f, 5.0f, 0.0f),
-            btScalar(1.0f),
+    physicsManager->AddRigidBody(puck,
+            btVector3(1.0f, 4.0f, 0.0f),
+            btScalar(2.0f),
             btScalar(0.3f));
 }
 
@@ -127,10 +124,6 @@ void IntroState::Update()
     // Update logic
     camera->Update();
     physicsManager->Update();
-    models[0]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(0));
-    models[1]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(1));
-    models[2]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(2));
-    models[3]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(3));
 }
 
 void IntroState::Draw()
@@ -140,11 +133,23 @@ void IntroState::Draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     skybox->Draw(camera->projectionMatrix, camera->viewMatrix);
+
     shaderProgram.UseProgram();
-    for(size_t i = 0; i < SIZE(models); i++)
-    {
-        shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[i]->GetModelMatrix()));
-        models[i]->Draw();
-    }
+
+    // Draw table
+    shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(physicsManager->GetModelMatrixAtIndex(TABLE)));
+    models[0]->Draw();
+
+    // Draw paddles
+    shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(physicsManager->GetModelMatrixAtIndex(PADDLE_1)));
+    models[1]->Draw();
+
+    shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(physicsManager->GetModelMatrixAtIndex(PADDLE_2)));
+    models[1]->Draw();
+
+    // Draw puck
+    shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(physicsManager->GetModelMatrixAtIndex(PUCK)));
+    models[2]->Draw();
+
 }
 

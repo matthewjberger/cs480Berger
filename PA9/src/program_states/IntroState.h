@@ -8,6 +8,14 @@
 #include "../core/Skybox.h"
 #include "../core/PhysicsManager.h"
 
+enum
+{
+    TABLE    = 0,
+    PADDLE_1 = 1,
+    PADDLE_2 = 2,
+    PUCK     = 3,
+};
+
 class IntroState : public GameState
 {
     public:
@@ -38,7 +46,7 @@ class IntroState : public GameState
         ShaderProgram shaderProgram;
         Camera* camera;
         Skybox *skybox;
-        Model* models[4];
+        Model* models[3];
         Texture sunTexture;
         PhysicsManager* physicsManager;
 };
