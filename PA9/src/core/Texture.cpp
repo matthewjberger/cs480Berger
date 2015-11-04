@@ -69,17 +69,16 @@ void Texture::SetType(std::string _type)
 void Texture::Load(string path, bool genMipMaps)
 {
 
-    // The texture id
+   // The texture id
     mTextureID = 0;
 
     // Load the image
-    SDL_Surface* textureSurface = IMG_Load(path.c_str());
+    unsigned char* textureImage = SOIL_load_image(path.c_str(), &mWidth, &mHeight, 0, SOIL_LOAD_RGB);
 
     // Check for errors
-    if (textureSurface == NULL)
+    if (textureImage == NULL)
     {
-        printf("Couldn't load image %s.\nIMG_Error: %s\n", path.c_str(), IMG_GetError());
-        return;
+        printf("Couldn't load image %s./n", path.c_str());
     }
 
     // Generate the texture and bind it
@@ -89,14 +88,8 @@ void Texture::Load(string path, bool genMipMaps)
     // Set pixel mode
     int pixelMode = GL_RGB;
 
-    // Check for alpha component and set pixel mode appropriately
-    if (textureSurface->format->BytesPerPixel == 4)
-    {
-        pixelMode = GL_RGBA;
-    }
-
     // Send data to gpu
-    glTexImage2D(GL_TEXTURE_2D, 0, pixelMode, textureSurface->w, textureSurface->h, 0, pixelMode, GL_UNSIGNED_BYTE, textureSurface->pixels);
+    glTexImage2D(GL_TEXTURE_2D, 0, pixelMode, mWidth, mHeight, 0, pixelMode, GL_UNSIGNED_BYTE, textureImage);
 
     // Generate mipmaps if requested
     if (genMipMaps)
@@ -113,6 +106,7 @@ void Texture::Load(string path, bool genMipMaps)
     // Set filtering
     SetFiltering(GL_LINEAR, GL_LINEAR);
 
+
     // Set path
     mPath = path;
 
@@ -122,12 +116,14 @@ void Texture::Load(string path, bool genMipMaps)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // Get rid of the temporary surface
-    SDL_FreeSurface(textureSurface);
+    SOIL_free_image_data(textureImage);
 }
 
-string Texture::GetPath()
+aiString Texture::GetPath()
 {
     return mPath;
 }
@@ -144,7 +140,7 @@ void Texture::SetWrap()
     glSamplerParameteri(mSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
-void Texture::SetPath(string path)
+void Texture::SetPath(aiString path)
 {
     mPath = path;
 }

@@ -27,8 +27,8 @@ class Texture
         std::string GetType();
         void SetType(std::string _type);
 
-        std::string GetPath();
-        void SetPath(std::string path);
+        aiString GetPath();
+        void SetPath(aiString path);
 
     private:
 
@@ -41,6 +41,6 @@ class Texture
 
         int mMinification, mMagnification;
 
-        std::string mPath;
+        aiString mPath;
 };
 #endif
