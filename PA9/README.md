@@ -1,20 +1,20 @@
-CS 480 - 3 Nov 2015 - PA9
-##Authors
+# CS 480 - 3 Nov 2015 - PA9
 
-Matthew Berger and Matt Fredrickson
+## Authors
+* Matthew Berger
 
-##Dependencies
+* Matt Fredrickson
 
+## Dependencies
 To install the dependencies run the install_dependencies.sh script.
 
-##Controls
+## Controls
+    Mouse: Control Player1 paddle
+    Menu: Choose view, start, stop, pause game.
+    ESC: Quit the game.
 
-Mouse: Control Player1 paddle
-Menu: Choose view, start, stop, pause game.
-ESC: Quit the game.
+## Notes
+>N/A
 
-##Notes
-
-##Extra Credit
-
+## Extra Credit
 TBD
