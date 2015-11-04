@@ -1,4 +1,5 @@
-CS 480 - 3 Nov 2015 - PA9
+PA9 - Air Hockey
+
 ##Authors
 
 Matthew Berger and Matt Fredrickson
@@ -12,9 +13,3 @@ To install the dependencies run the install_dependencies.sh script.
 Mouse: Control Player1 paddle
 Menu: Choose view, start, stop, pause game.
 ESC: Quit the game.
-
-##Notes
-
-##Extra Credit
-
-TBD
