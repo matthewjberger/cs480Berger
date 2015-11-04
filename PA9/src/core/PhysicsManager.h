@@ -31,6 +31,8 @@ class PhysicsManager
         void Update();
 
         void ApplyForceAtIndex(btVector3 force, int index);
+        btRigidBody* GetBodyAtIndex(int index);
+
 
     private:
 

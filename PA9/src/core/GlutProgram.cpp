@@ -32,6 +32,11 @@ void KeyboardCallback(unsigned char key, int xPos, int yPos)
     GlutProgram::GetInstance()->Keyboard(key, xPos, yPos);
 }
 
+void KeyboardUpCallback(unsigned char key, int xPos, int yPos)
+{
+    GlutProgram::GetInstance()->KeyboardUp(key, xPos, yPos);
+}
+
 GlutProgram *GlutProgram::instance = 0;
 
 GlutProgram::GlutProgram()
@@ -163,8 +168,18 @@ void GlutProgram::MousePassive(int xPos, int yPos)
 
 void GlutProgram::Keyboard(unsigned char key, int xPos, int yPos)
 {
+    keystates[key] = true;
+
     if(!ProgramStates.empty())
         ProgramStates.back()->Keyboard(key, xPos, yPos);
+}
+
+void GlutProgram::KeyboardUp(unsigned char key, int xPos, int yPos)
+{
+    keystates[key] = false;
+
+    if(!ProgramStates.empty())
+        ProgramStates.back()->KeyboardUp(key, xPos, yPos);
 }
 
 void GlutProgram::PopState()
@@ -256,5 +271,10 @@ float GlutProgram::GetTimeDelta()
 glm::vec2 GlutProgram::GetMousePosition()
 {
     return mousePosition;
+}
+
+bool* GlutProgram::GetKeystates()
+{
+    return keystates; // null
 }
 

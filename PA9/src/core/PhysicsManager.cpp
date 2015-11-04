@@ -105,3 +105,8 @@ void PhysicsManager::ApplyForceAtIndex(btVector3 force, int index)
 
 }
 
+btRigidBody* PhysicsManager::GetBodyAtIndex(int index)
+{
+   return btRigidBody::upcast(dynamicsWorld->getCollisionObjectArray()[index]);
+}
+

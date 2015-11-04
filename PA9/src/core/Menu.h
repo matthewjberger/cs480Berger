@@ -17,6 +17,9 @@ class Menu
 
         void AddEntry(std::string entryText, int entryValue);
 
+        bool InUse();
+        void SetUse(bool use);
+
     private:
         Menu();
         ~Menu();
@@ -24,6 +27,7 @@ class Menu
         static Menu* instance;
         int selectedOption;
         int ID;
+        bool inUse;
 };
 
 #endif

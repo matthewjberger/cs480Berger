@@ -7,8 +7,18 @@ InitialState::~InitialState(){}
 void InitialState::Pause(){}
 void InitialState::Resume(){}
 InitialState* InitialState::GetInstance()
-{ if(instance == 0) instance = new InitialState();
+{
+    if(instance == 0) instance = new InitialState();
     return instance;
+}
+void InitialState::KeyboardUp(unsigned char key, int xPos, int yPos){}
+void InitialState::Mouse(int button, int state, int xPos, int yPos)
+{
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
+        if(contextMenu->InUse())
+            contextMenu->SetUse(false);
+    }
 }
 
 void InitialState::Reshape(int newWidth, int newHeight)
@@ -45,6 +55,7 @@ void InitialState::Initialize(GlutProgram* program)
 {
     // Grab the main program instance for use in the program state
     mainProgram = program;
+
 
     glutFullScreen();
     glutSetCursor(GLUT_CURSOR_NONE);
@@ -111,8 +122,6 @@ void InitialState::Initialize(GlutProgram* program)
 void InitialState::Finalize()
 {
     // Free Resources here
-    shaderProgram.DeleteProgram();
-
     models[0]->Free();
     models[1]->Free();
     models[2]->Free();
@@ -124,15 +133,15 @@ void InitialState::Finalize()
     camera = NULL;
     skybox = NULL;
     physicsManager = NULL;
-}
 
-void InitialState::Mouse(int button, int state, int xPos, int yPos)
-{
-    // Handle Mouse input
+    shaderProgram.DeleteProgram();
 }
 
 void InitialState::MousePassive(int xPos, int yPos)
 {
+    if(contextMenu->InUse())
+        return;
+
     float xOffset = xPos - mainProgram->GetScreenWidth()/2;
     float yOffset = yPos - mainProgram->GetScreenHeight()/2;
     physicsManager->ApplyForceAtIndex(btVector3(-yOffset * -0.01, 0.0, xOffset * -0.01), 2);
@@ -140,10 +149,37 @@ void InitialState::MousePassive(int xPos, int yPos)
 
 void InitialState::Keyboard(unsigned char key, int xPos, int yPos)
 {
+    bool* keystates = mainProgram->GetKeystates();
+
     // Handle keyboard input
     if(key == 27) // ESC
     {
         mainProgram->Quit();
+    }
+
+    static float speed = 4;
+
+    if(physicsManager == NULL)
+        return;
+
+    if(keystates['w'])
+    {
+        physicsManager->ApplyForceAtIndex(btVector3(-speed, 0, 0),1);
+    }
+
+    if(keystates['a'])
+    {
+        physicsManager->ApplyForceAtIndex(btVector3(0, 0, speed),1);
+    }
+
+    if(keystates['s'])
+    {
+        physicsManager->ApplyForceAtIndex(btVector3(speed, 0, 0),1);
+    }
+
+    if(keystates['d'])
+    {
+        physicsManager->ApplyForceAtIndex(btVector3(0, 0, -speed),1);
     }
 }
 
@@ -178,8 +214,35 @@ void InitialState::Update()
     }
 
     camera->Update();
+
     physicsManager->Update();
-    glutWarpPointer(mainProgram->GetScreenWidth()/2, mainProgram->GetScreenHeight()/2);
+
+    // Limit paddle 1
+    btTransform transform;
+    btRigidBody* paddle = physicsManager->GetBodyAtIndex(2);
+    paddle->getMotionState()->getWorldTransform(transform);
+    btVector3 position = transform.getOrigin();
+    if(position.x() < 0)
+    {
+        paddle->clearForces();
+        paddle->setLinearVelocity(btVector3(1, 0, 0));
+    }
+
+    // Limit paddle 2
+    btTransform transform2;
+    btRigidBody* paddle2 = physicsManager->GetBodyAtIndex(1);
+    paddle2->getMotionState()->getWorldTransform(transform2);
+    btVector3 position2 = transform2.getOrigin();
+    if(position2.x() > 0)
+    {
+        paddle2->clearForces();
+        paddle2->setLinearVelocity(btVector3(-1, 0, 0));
+    }
+
+    if(!contextMenu->InUse())
+    {
+        glutWarpPointer(mainProgram->GetScreenWidth()/2, mainProgram->GetScreenHeight()/2);
+    }
 }
 
 void InitialState::Render()

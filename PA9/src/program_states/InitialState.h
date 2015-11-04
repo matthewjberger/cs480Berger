@@ -28,6 +28,7 @@ class InitialState : public ProgramState
         void Mouse(int button, int state, int xPos, int yPos);
         void MousePassive(int xPos, int yPos);
         void Keyboard(unsigned char key, int xPos, int yPos);
+        void KeyboardUp(unsigned char key, int xPos, int yPos);
         void Reshape(int newWidth, int newHeight);
         void Render();
         void Update();

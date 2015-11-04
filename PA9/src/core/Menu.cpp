@@ -1,6 +1,6 @@
 #include "Menu.h"
 
-void CreateMenuCallback(int value){ Menu::GetInstance()->SetSelectedOption(value); }
+void CreateMenuCallback(int value){ Menu::GetInstance()->SetSelectedOption(value); Menu::GetInstance()->SetUse(true); }
 Menu* Menu::instance = 0;
 Menu::Menu()
 {
@@ -44,5 +44,16 @@ void Menu::AttachToMouseRight()
 {
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
+
+bool Menu::InUse()
+{
+    return inUse;
+}
+
+void Menu::SetUse(bool use)
+{
+    inUse = use;
+}
+
 
 

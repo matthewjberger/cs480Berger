@@ -38,6 +38,7 @@ class GlutProgram
         void Mouse(int button, int state, int xPos, int yPos);
         void MousePassive(int xPos, int yPos);
         void Keyboard(unsigned char key, int xPos, int yPos);
+        void KeyboardUp(unsigned char key, int xPos, int yPos);
         void Reshape(int newWidth, int newHeight);
         void Update();
         void Render();
@@ -62,6 +63,8 @@ class GlutProgram
         float GetTimeDelta();
         glm::vec2 GetMousePosition();
 
+        bool* GetKeystates();
+
     private:
         static GlutProgram *instance;
 
@@ -73,6 +76,8 @@ class GlutProgram
 
         std::string title;
         glm::vec2 mousePosition;
+
+        bool* keystates = new bool[256];
 
 };
 
@@ -100,6 +105,7 @@ class ProgramState
         virtual void Mouse(int button, int state, int xPos, int yPos) = 0;
         virtual void MousePassive(int xPos, int yPos) = 0;
         virtual void Keyboard(unsigned char key, int xPos, int yPos) = 0;
+        virtual void KeyboardUp(unsigned char key, int xPos, int yPos) = 0;
         virtual void Reshape(int newWidth, int newHeight) = 0;
         virtual void Render() = 0;
         virtual void Update() = 0;
