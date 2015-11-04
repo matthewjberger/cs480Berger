@@ -54,6 +54,4 @@ class InitialState : public ProgramState
         Model* models[3];
         Skybox* skybox;
 
-        int prevX, prevY;
-
 };

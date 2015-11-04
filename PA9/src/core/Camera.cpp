@@ -53,9 +53,6 @@ void Camera::Update()
     int mouseX = game->GetMousePosition().x;
     int mouseY = game->GetMousePosition().y;
 
-    // Reset mouse to center of the screen
-    glutWarpPointer(game->GetScreenWidth()/2, game->GetScreenHeight()/2);
-
     // Update angles
     horizontalAngle += yawSensitivity  * float((game->GetScreenWidth() / 2) - mouseX);
     verticalAngle   += pitchSensitivity* float((game->GetScreenHeight() / 2) - mouseY);
@@ -90,6 +87,10 @@ void Camera::Update()
 
     projectionMatrix = perspective(initialFOV, game->GetAspectRatio(), 0.1f, 1000.0f);
     viewMatrix       = lookAt(position, position + direction, up);
+
+    // Reset mouse to center of the screen
+    glutWarpPointer(game->GetScreenWidth()/2, game->GetScreenHeight()/2);
+
 }
 
 float Camera::GetPitchSensitivity()

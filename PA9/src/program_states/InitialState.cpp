@@ -46,10 +46,8 @@ void InitialState::Initialize(GlutProgram* program)
     // Grab the main program instance for use in the program state
     mainProgram = program;
 
-    prevX = program->GetScreenWidth()/2;
-    prevY = program->GetScreenHeight()/2;
-
-    glutWarpPointer(prevX, prevY);
+    glutFullScreen();
+    glutSetCursor(GLUT_CURSOR_NONE);
 
     contextMenu = Menu::GetInstance();
     contextMenu->AddEntry("Start", MENU_START );
@@ -76,19 +74,19 @@ void InitialState::Initialize(GlutProgram* program)
     physicsManager = new PhysicsManager();
 
     // Table collision shapes
-    btCollisionShape* bottom = new btStaticPlaneShape(btVector3( 0, 1,  0), 0.85);
-    btCollisionShape* right  = new btStaticPlaneShape(btVector3( 0, 0,  1), -1.7);
-    btCollisionShape* left   = new btStaticPlaneShape(btVector3( 0, 0, -1), -1.7);
-    btCollisionShape* front  = new btStaticPlaneShape(btVector3(-1, 0,  0), -3.0);
-    btCollisionShape* back   = new btStaticPlaneShape(btVector3( 1, 0,  0), -3.0);
+    btCollisionShape* bottom = new btStaticPlaneShape(btVector3( 0, 1,  0), 1.0);
+    btCollisionShape* right  = new btStaticPlaneShape(btVector3( 0, 0,  1), -1.6);
+    btCollisionShape* left   = new btStaticPlaneShape(btVector3( 0, 0, -1), -1.6);
+    btCollisionShape* front  = new btStaticPlaneShape(btVector3(-1, 0,  0), -2.8);
+    btCollisionShape* back   = new btStaticPlaneShape(btVector3( 1, 0,  0), -2.8);
 
     // Paddle and Puck collision shape
     btCollisionShape* cylinder  = new btCylinderShape(btVector3(0.2, 0.1, 0.2));
 
     // Add rigid bodies
-    physicsManager->AddRigidBody(cylinder, btVector3(0.0, 0.0, 0.0), 2); // puck
-    physicsManager->AddRigidBody(cylinder, btVector3(-2.0, 0.0, 0.0), 2); // paddle 1
-    physicsManager->AddRigidBody(cylinder, btVector3(2.0, 0.0, 0.0), 2); // paddle 2
+    physicsManager->AddRigidBody(cylinder, btVector3(0.0, 0.0, 0.0), 0.2, 0, true); // puck
+    physicsManager->AddRigidBody(cylinder, btVector3(-2.0, 0.0, 0.0), 2, 0, true); // paddle 1
+    physicsManager->AddRigidBody(cylinder, btVector3(2.0, 0.0, 0.0), 2, 0, true); // paddle 2
     physicsManager->AddRigidBody(bottom, btVector3(0, -1, 0));
     physicsManager->AddRigidBody(right,  btVector3(0, -1, 0));
     physicsManager->AddRigidBody(left,   btVector3(0, -1, 0));
@@ -135,14 +133,9 @@ void InitialState::Mouse(int button, int state, int xPos, int yPos)
 
 void InitialState::MousePassive(int xPos, int yPos)
 {
-    GlutProgram* program = GlutProgram::GetInstance();
-    float x = float(xPos) / float(program->GetScreenWidth()  - 0.5) * 2;
-    float y = float(yPos) / float(program->GetScreenHeight() - 0.5) * 2;
-    float xOffset = x - prevX;
-    float yOffset = y - prevY;
-    prevX = x;
-    prevY = y;
-    physicsManager->ApplyForceAtIndex(btVector3(xOffset * -0.01, 0.0, yOffset * -0.01), 2);
+    float xOffset = xPos - mainProgram->GetScreenWidth()/2;
+    float yOffset = yPos - mainProgram->GetScreenHeight()/2;
+    physicsManager->ApplyForceAtIndex(btVector3(-yOffset * -0.01, 0.0, xOffset * -0.01), 2);
 }
 
 void InitialState::Keyboard(unsigned char key, int xPos, int yPos)
@@ -186,6 +179,7 @@ void InitialState::Update()
 
     camera->Update();
     physicsManager->Update();
+    glutWarpPointer(mainProgram->GetScreenWidth()/2, mainProgram->GetScreenHeight()/2);
 }
 
 void InitialState::Render()
@@ -215,7 +209,7 @@ void InitialState::Render()
     shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(physicsManager->GetModelMatrixAtIndex(2)));
     models[2]->Draw();
 
-    PrintText(0, 0,  "Player 1 Score: 0");
-    PrintText(490, 0, "Player 2 Score: 0");
+    PrintText(100, 0,  "Player Score: 0");
+    PrintText(1200, 0, "Opponent Score: 0");
 }
 
