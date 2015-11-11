@@ -1,5 +1,8 @@
 #include "Game.h"
 
+using namespace std;
+using namespace glm;
+
 Game *Game::inst = 0;
 
 Game::Game()
@@ -34,7 +37,7 @@ Game *Game::GetInstance()
 bool Game::Initialize()
 {
     // Set caption
-    caption = "Matthew Berger's Game Engine";
+    caption = "OpenGL Lighting Demo by Matthew Berger and Matt Fredrickson";
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -92,7 +95,7 @@ bool Game::Initialize()
 
                 // Depth testing
                 glEnable(GL_DEPTH_TEST);
-                glClearDepth(1.0);
+                glDepthFunc(GL_LESS);
 
                 // Enable culling
                 //glEnable(GL_CULL_FACE);
