@@ -1,35 +1,63 @@
 #include "Camera.h"
 #include "Game.h"
 
-using namespace std;
-using namespace glm;
-
-Camera::Camera(vec3 position, float speed)
+Camera::Camera(vec3 pos, float speed, float horizontalAngle, float verticalAngle)
 {
     // Get game instance
     Game *game = Game::GetInstance();
 
     // Initialize variables
-    this->position  = position;
+    position  = pos;
     direction = vec3(0, 0, 0);
     right     = vec3(0, 0, 0);
-    up        = vec3(0, 0, 0);
+    up        = vec3(0, 1, 0);
 
-    horizontalAngle  = float(pi<float>());
-    verticalAngle    = 0.0f;
-    initialFOV       = 45.0f;
-    curFOV           = initialFOV;
-    this->speed      = speed;
-    pitchSensitivity = 0.005f;
-    yawSensitivity   = 0.005f;
+    this->horizontalAngle  = horizontalAngle;
+    this->verticalAngle    = verticalAngle;
+    initialFOV             = 45.0f;
+    curFOV                 = initialFOV;
+    this->speed            = speed;
+    pitchSensitivity       = 0.005f;
+    yawSensitivity         = 0.005f;
 
     mouseX = game->GetScreenWidth() / 2;
     mouseY = game->GetScreenHeight() / 2;
 
+    forward = false;
+
+    // Set mouse to center of the screen
+    SDL_WarpMouseInWindow(game->GetWindow(), game->GetScreenWidth() / 2, game->GetScreenHeight() / 2);
+
+    // Hide the mouse
+    SDL_ShowCursor(SDL_DISABLE);
+
     inputEnabled = false;
 
-    LookAt(position, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0,1.0,0.0));
+    // 1.55f radians is 89 degrees, which is a reasonable vertical constraint
+    if(verticalAngle > 1.55f)
+        verticalAngle = 1.55f;
+    else if(verticalAngle < -1.55f)
+        verticalAngle = -1.55f;
 
+    // Set new direction by converting spherical coordinates to cartesian
+    direction = vec3(
+            cos(verticalAngle) * sin(horizontalAngle),
+            sin(verticalAngle),
+            cos(verticalAngle) * cos(horizontalAngle)
+            );
+
+    // Calculate right vector
+    right = vec3(
+            sin(horizontalAngle - pi<float>() / 2),
+            0,
+            cos(horizontalAngle - pi<float>() / 2)
+            );
+
+    // Calculate up vector
+    up = cross(right, direction);
+
+    projectionMatrix = perspective(initialFOV, Game::GetInstance()->GetAspectRatio(), 0.1f, 1000.0f);
+    viewMatrix       = lookAt(position, position + direction, up);
 }
 
 Camera::~Camera()
@@ -134,20 +162,13 @@ void Camera::SetYawSensitivity(float newSens)
     yawSensitivity = newSens;
 }
 
-glm::mat4 Camera::GetMVP(glm::mat4 &modelMatrix)
+glm::mat4 Camera::GetMVP(glm::mat4 modelMatrix)
 {
     glm::mat4 mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
     return mvpMatrix;
 }
-
-void Camera::EnableInput(bool enabled)
+void Camera::UseInput(bool enabled)
 {
     inputEnabled = enabled;
-}
-
-void Camera::LookAt(glm::vec3 position, glm::vec3 focusPoint, glm::vec3 up)
-{
-    this->position = position;
-    this->viewMatrix = glm::lookAt(position, focusPoint, up);
 }
 

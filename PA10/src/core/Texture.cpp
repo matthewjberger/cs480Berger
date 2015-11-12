@@ -78,7 +78,8 @@ void Texture::Load(string path, bool genMipMaps)
     // Check for errors
     if (textureSurface == NULL)
     {
-        printf("Couldn't load image %s./nIMG_Error: %s", path.c_str(), IMG_GetError());
+        printf("Couldn't load image %s.\nIMG_Error: %s\n", path.c_str(), IMG_GetError());
+        return;
     }
 
     // Generate the texture and bind it

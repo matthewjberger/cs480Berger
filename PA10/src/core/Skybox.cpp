@@ -1,8 +1,5 @@
 #include "Skybox.h"
 
-using namespace std;
-using namespace glm;
-
 Skybox::Skybox(string right, string left, string top, string bottom, string back, string front)
 {
     vector<const GLchar*> faces;
@@ -31,7 +28,7 @@ Skybox::Skybox(string right, string left, string top, string bottom, string back
         // Check for errors
         if (image == NULL)
         {
-            printf("Couldn't load image %s./nIMG_Error: %s", faces[i], IMG_GetError());
+            printf("Couldn't load skybox image %s.\nIMG_Error: %s\n", faces[i], IMG_GetError());
             break;
         }
 
@@ -45,6 +42,7 @@ Skybox::Skybox(string right, string left, string top, string bottom, string back
         }
 
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixelMode, image->w, image->h, 0, pixelMode, GL_UNSIGNED_BYTE, image->pixels);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
         SDL_FreeSurface(image);
         image = NULL;
@@ -135,7 +133,7 @@ void Skybox::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 
     skyboxVAO.Bind();
 
-    glActiveTexture(GL_TEXTURE0);
+    //glActiveTexture(GL_TEXTURE0);
     skyboxProgram.SetUniform("skybox", 0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     glDrawArrays(GL_TRIANGLES, 0, 36);
