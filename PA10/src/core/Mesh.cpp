@@ -35,6 +35,10 @@ void Mesh::SetupMesh()
         meshVAO.EnableAttribute(1);
         meshVAO.ConfigureAttribute(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, TexCoords));
 
+        // Vertex Texture Coordinates
+        meshVAO.EnableAttribute(2);
+        meshVAO.ConfigureAttribute(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, Normal));
+
     meshVAO.Unbind();
 }
 
