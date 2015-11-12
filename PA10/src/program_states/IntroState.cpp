@@ -20,8 +20,7 @@ void IntroState::Initialize()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    camera = new Camera(glm::vec3(0.0f, 12.0f, 8.0f), 0.7f, M_PI, -1);
-
+    camera = new Camera(glm::vec3(0.0f, 8.0f, 10.0f));
 
     skybox = new Skybox("Assets/skybox/right.jpg",
             "Assets/skybox/left.jpg",

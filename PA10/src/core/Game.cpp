@@ -1,5 +1,8 @@
 #include "Game.h"
 
+using namespace std;
+using namespace glm;
+
 Game *Game::inst = 0;
 
 Game::Game()
@@ -13,8 +16,8 @@ Game::Game()
     window        = NULL;
     screenSurface = NULL;
 
-    screenWidth   = 800;
-    screenHeight  = 600;
+    screenWidth   = 640;
+    screenHeight  = 480;
 
     maxFPS        = 60;
 
@@ -34,12 +37,12 @@ Game *Game::GetInstance()
 bool Game::Initialize()
 {
     // Set caption
-    caption = "Matthew Berger's Game Engine";
+    caption = "PA9 - Lighting. By Matthew Berger and Matt Fredrickson.";
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        printf("SDL could not be initialized!\n SDL_Error: %s\n", SDL_GetError() );
+        printf("SDL could not be initialized! SDL_Error: %s", SDL_GetError() );
 
         return false;
     }
@@ -63,12 +66,12 @@ bool Game::Initialize()
         }
         else if (isFullscreen == false)
         {
-            window = SDL_CreateWindow(caption.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+            window = SDL_CreateWindow(caption.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
         }
 
         if (window == NULL)
         {
-            printf("Window could not be created!\n SDL_Error: %s\n", SDL_GetError());
+            printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 
             return false;
         }
@@ -79,7 +82,7 @@ bool Game::Initialize()
 
             if (context == NULL)
             {
-                printf("OpenGL context could not be created!\n SDL_Error: %s\n", SDL_GetError());
+                printf("OpenGL context could not be created! SDL_Error: %s\n", SDL_GetError());
 
                 return false;
             }
@@ -94,9 +97,16 @@ bool Game::Initialize()
                 glEnable(GL_DEPTH_TEST);
                 glDepthFunc(GL_LESS);
 
+                // Enable culling
+                //glEnable(GL_CULL_FACE);
+                //glCullFace(GL_BACK);
+                //glFrontFace(GL_CW);
+
                 // Initialize GLEW
                 glewExperimental = GL_TRUE;
+
                 GLenum glewError = glewInit();
+
                 if (glewError != GLEW_OK)
                 {
                     printf("Error initializing GLEW! %s \n", glewGetErrorString(glewError));
@@ -248,7 +258,7 @@ void Game::ToggleFullScreen()
 {
     if (isFullscreen == false)
     {
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
+        SDL_SetWindowFullscreen(window, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
 
         isFullscreen = true;
     }
@@ -316,7 +326,6 @@ float Game::GetTimeDelta()
 
 float Game::GetAspectRatio()
 {
-    SDL_GetWindowSize(window, &screenWidth, &screenHeight);
     // Prevent division by 0
     float adjustedScreenHeight = screenHeight;
     if(screenHeight == 0) adjustedScreenHeight = 1;

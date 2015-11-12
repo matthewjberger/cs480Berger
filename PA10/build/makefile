@@ -14,7 +14,7 @@ SRC_DIR=../src
 SRC= $(shell find $(SRC_DIR) -name *.cpp)
 
 # Executable name
-EXE_NAME = Bullet
+EXE_NAME = Lighting
 
 # INCLUDE_PATHS specifies the additional include paths we'll need
 INCLUDE_PATHS=$(shell sdl2-config --cflags) -I/usr/include/bullet
