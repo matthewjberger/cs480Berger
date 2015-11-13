@@ -47,6 +47,13 @@ void Model::Draw()
     }
 }
 
+void Model::Draw(ShaderProgram &program, Camera *camera, string glslMvpUniformName)
+{
+    program.UseProgram();
+    program.SetUniform(glslMvpUniformName, camera->GetMVP(this->modelMatrix));
+    Draw();
+}
+
 void Model::LoadModel(std::string path)
 {
     Assimp::Importer importer;

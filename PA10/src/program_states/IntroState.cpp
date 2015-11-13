@@ -21,6 +21,7 @@ void IntroState::Initialize()
     glDepthFunc(GL_LESS);
 
     camera = new Camera(glm::vec3(0.0f, 8.0f, 10.0f));
+    camera->EnableInput();
 
     skybox = new Skybox("Assets/skybox/right.jpg",
             "Assets/skybox/left.jpg",
@@ -64,6 +65,7 @@ void IntroState::Finalize()
     {
         models[i]->Free();
     }
+
     shaderProgram.DeleteProgram();
     delete camera;
     delete skybox;
@@ -138,12 +140,11 @@ void IntroState::Draw()
     glClearColor(0.0, 0.0, 0.2, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    skybox->Draw(camera->projectionMatrix, camera->viewMatrix);
+    skybox->Draw(camera);
     shaderProgram.UseProgram();
     for(size_t i = 0; i < SIZE(models); i++)
     {
-        shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[i]->GetModelMatrix()));
-        models[i]->Draw();
+        models[i]->Draw(shaderProgram, camera, "mvpMatrix");
     }
 }
 

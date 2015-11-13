@@ -151,3 +151,13 @@ void Camera::LookAt(glm::vec3 position, glm::vec3 focusPoint, glm::vec3 up)
     this->viewMatrix = glm::lookAt(position, focusPoint, up);
 }
 
+glm::mat4 Camera::GetProjectionMatrix()
+{
+    return projectionMatrix;
+}
+
+glm::mat4 Camera::GetViewMatrix()
+{
+    return viewMatrix;
+}
+

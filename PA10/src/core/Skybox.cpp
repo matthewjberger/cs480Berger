@@ -123,6 +123,11 @@ Skybox::~Skybox()
 {
 }
 
+void Skybox::Draw(Camera* camera)
+{
+    Draw(camera->GetProjectionMatrix(), camera->GetViewMatrix());
+}
+
 void Skybox::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 {
     glDepthFunc(GL_LEQUAL);

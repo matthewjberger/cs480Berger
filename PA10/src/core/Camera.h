@@ -22,11 +22,13 @@ class Camera
         void LookAt(glm::vec3 position, glm::vec3 focusPoint, glm::vec3 up);
 
         glm::mat4 GetMVP(glm::mat4 modelMatrix);
+        glm::mat4 GetProjectionMatrix();
+        glm::mat4 GetViewMatrix();
+
+    private:
 
         glm::mat4 projectionMatrix;
         glm::mat4 viewMatrix;
-
-    private:
 
         void CalculateVectors(int mouseX, int mouseY);
 
