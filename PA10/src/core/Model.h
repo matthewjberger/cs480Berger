@@ -14,7 +14,7 @@ class Model
         ~Model();
 
         void Draw();
-        void Draw(ShaderProgram &program, Camera *camera, std::string glslMvpUniformName);
+        void Draw(ShaderProgram &program, Camera *camera, std::string glslMvpUniformName = "mvpMatrix");
         void LoadTexture(std::string image, bool genMipMaps);
         void Free();
 
