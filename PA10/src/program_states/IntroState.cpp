@@ -21,7 +21,6 @@ void IntroState::Initialize()
     glDepthFunc(GL_LESS);
 
     camera = new Camera(glm::vec3(0.0f, 8.0f, 10.0f));
-    camera->EnableInput();
 
     skybox = new Skybox("Assets/skybox/right.jpg",
             "Assets/skybox/left.jpg",
