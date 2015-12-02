@@ -172,11 +172,11 @@ void InitialState::Render()
 
     shaderProgram.UseProgram();
 
-    // Draw table
+    // Draw maze
     shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[0]->GetModelMatrix()));
     models[0]->Draw();
 
-    // Draw puck
+    // Draw ball
     shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[1]->GetModelMatrix()));
     models[1]->Draw();
 
