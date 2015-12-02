@@ -47,13 +47,6 @@ void Model::Draw()
     }
 }
 
-void Model::Draw(ShaderProgram &program, Camera *camera, string glslMvpUniformName)
-{
-    program.UseProgram();
-    program.SetUniform(glslMvpUniformName, camera->GetMVP(this->modelMatrix));
-    Draw();
-}
-
 void Model::LoadModel(std::string path)
 {
     Assimp::Importer importer;
@@ -120,13 +113,6 @@ Mesh Model::ProcessMesh(aiMesh* mesh)
         else
         {
             v.TexCoords = glm::vec2(0.0f, 0.0f);
-        }
-
-        // Normal
-        if(mesh->HasNormals())
-        {
-            const aiVector3D* temp = &(mesh->mNormals[indices[i]]);
-            v.Normal = glm::vec3(temp->x, temp->y, temp->z);
         }
 
         vertices.push_back(v);

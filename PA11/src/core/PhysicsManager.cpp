@@ -1,7 +1,8 @@
 #include "PhysicsManager.h"
-#include "Game.h"
+#include "GlutProgram.h"
 
 using namespace std;
+using namespace glm;
 
 PhysicsManager::PhysicsManager()
 {
@@ -79,7 +80,7 @@ glm::mat4 PhysicsManager::GetModelMatrixAtIndex(int index)
 
 void PhysicsManager::Update()
 {
-    dynamicsWorld->stepSimulation(Game::GetInstance()->GetTimeDelta(), 1);
+    dynamicsWorld->stepSimulation(GlutProgram::GetInstance()->GetTimeDelta(), 1);
 }
 
 void PhysicsManager::ApplyForceAtIndex(btVector3 force, int index)

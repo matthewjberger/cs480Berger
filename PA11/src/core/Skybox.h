@@ -5,7 +5,6 @@
 #include "VAO.h"
 #include "VBO.h"
 #include "ShaderProgram.h"
-#include "Camera.h"
 
 class Skybox
 {
@@ -14,7 +13,6 @@ class Skybox
         ~Skybox();
 
         void Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix);
-        void Draw(Camera* camera);
 
     private:
         VAO skyboxVAO;

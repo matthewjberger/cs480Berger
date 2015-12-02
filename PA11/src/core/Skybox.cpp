@@ -1,7 +1,6 @@
 #include "Skybox.h"
 
 using namespace std;
-using namespace glm;
 
 Skybox::Skybox(string right, string left, string top, string bottom, string back, string front)
 {
@@ -21,34 +20,31 @@ Skybox::Skybox(string right, string left, string top, string bottom, string back
     glGenTextures(1, &textureID);
     glActiveTexture(GL_TEXTURE0);
 
-    SDL_Surface* image = NULL;
+    unsigned char* image;
+    int width;
+    int height;
 
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     for(GLuint i = 0; i < faces.size(); i++)
     {
-        image = IMG_Load(faces[i]);
+        // Load the image
+        image = SOIL_load_image(faces[i], &width, &height, 0, SOIL_LOAD_RGB);
 
         // Check for errors
         if (image == NULL)
         {
-            printf("Couldn't load image %s./nIMG_Error: %s", faces[i], IMG_GetError());
+            printf("Couldn't load skybox image %s.\n", faces[i]);
             break;
         }
 
         // Set pixel mode
         int pixelMode = GL_RGB;
 
-        // Check for alpha component and set pixel mode appropriately
-        if (image->format->BytesPerPixel == 4)
-        {
-            pixelMode = GL_RGBA;
-        }
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixelMode, width, height, 0, pixelMode, GL_UNSIGNED_BYTE, image);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, pixelMode, image->w, image->h, 0, pixelMode, GL_UNSIGNED_BYTE, image->pixels);
-
-        SDL_FreeSurface(image);
+        SOIL_free_image_data(image);
         image = NULL;
-
     }
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -123,11 +119,6 @@ Skybox::~Skybox()
 {
 }
 
-void Skybox::Draw(Camera* camera)
-{
-    Draw(camera->GetProjectionMatrix(), camera->GetViewMatrix());
-}
-
 void Skybox::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 {
     glDepthFunc(GL_LEQUAL);
@@ -140,7 +131,7 @@ void Skybox::Draw(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
 
     skyboxVAO.Bind();
 
-    glActiveTexture(GL_TEXTURE0);
+    //glActiveTexture(GL_TEXTURE0);
     skyboxProgram.SetUniform("skybox", 0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
     glDrawArrays(GL_TRIANGLES, 0, 36);

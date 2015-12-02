@@ -1,11 +1,20 @@
-# Compiler being used
+# Linux
 CC = g++
+LIBS = -lglut -lGLEW -lGL -lSOIL -lassimp -lBulletDynamics -lBulletSoftBody -lBulletCollision -lLinearMath
+
+# For Macs uncomment the next line and comment out the previous one
+#CC=clang++
+#LIBS=  -framework OpenGL -framework GLUT -framework Cocoa -lGLEW -stdlib=libc++
+# Assuming you want to use a recent compiler
 
 # Output directory
-OUT_DIR= ../bin/
+OUT_DIR = ../bin/
 
-# Convert all source files to object files
-OBJECTS = $(SRC:%.cpp=%.o)
+# Executable file
+EXE = Labyrinth
+
+# Compiler flags
+CXXFLAGS= -g -w -std=c++0x
 
 # Source directory
 SRC_DIR=../src
@@ -13,30 +22,20 @@ SRC_DIR=../src
 # Find all source files
 SRC= $(shell find $(SRC_DIR) -name *.cpp)
 
-# Executable name
-EXE_NAME = Lighting
+# Convert all source files to object files
+OBJ = $(SRC:%.cpp=%.o)
 
-# INCLUDE_PATHS specifies the additional include paths we'll need
-INCLUDE_PATHS=$(shell sdl2-config --cflags) -I/usr/include/bullet
+# Extra include paths
+INCLUDE_PATHS=-I/usr/include/bullet
 
-# LIBRARY_PATHS specifies the additional library paths we'll need
-LIBRARY_PATHS=$(shell sdl2-config --libs)
+all: $(EXE)
 
-# Compiler flags
-COMPILER_FLAGS = -g -w -std=c++11
-
-# Linker flags
-LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lGL -lGLEW -lassimp -lBulletDynamics -lBulletSoftBody -lBulletCollision -lLinearMath
-
-# Target
-all: $(EXE_NAME)
-
-$(EXE_NAME): $(OBJECTS)
+$(EXE): $(OBJ)
 	mkdir -p $(OUT_DIR) \
-	&& $(CC) $(OBJECTS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OUT_DIR)$(EXE_NAME) \
+	&& $(CC) $(OBJ) $(INCLUDE_PATHS) -o $(OUT_DIR)$(EXE) $(LIBS) \
 
 %.o: %.cpp
-	g++ -c $(COMPILER_FLAGS) $(INCLUDE_PATHS)  $< -o $@
+	g++ -c $(CXXFLAGS) $(INCLUDE_PATHS)  $< -o $@
 
 clean:
 	-rm $(SRC_DIR)/*.o

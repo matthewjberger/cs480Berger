@@ -7,10 +7,13 @@ class Camera
 {
     public:
 
-        Camera(glm::vec3 position = glm::vec3(0.0f), float speed = 0.7);
+        Camera(glm::vec3 pos = glm::vec3(0.0f), float speed = 0.7);
         ~Camera();
 
+        void SetPosition(glm::vec3 position, float horizontalAngle = M_PI, float verticalAngle =  0.0f);
         void Update();
+
+        void LookAt(glm::vec3 position, glm::vec3 focusPoint, glm::vec3 up);
 
         // Membor Accessors
         float GetPitchSensitivity();
@@ -18,21 +21,14 @@ class Camera
         float GetYawSensitivity();
         void  SetYawSensitivity(float newSens);
 
-        void EnableInput(bool enabled = true);
-        void LookAt(glm::vec3 position, glm::vec3 focusPoint, glm::vec3 up);
-
         glm::mat4 GetMVP(glm::mat4 modelMatrix);
-        glm::mat4 GetProjectionMatrix();
-        glm::mat4 GetViewMatrix();
-
-    private:
 
         glm::mat4 projectionMatrix;
         glm::mat4 viewMatrix;
 
-        void CalculateVectors(int mouseX, int mouseY);
+        void EnableInput(bool enabled = true);
 
-        bool inputEnabled;
+    private:
 
         glm::vec3 position;
         glm::vec3 direction;
@@ -51,6 +47,10 @@ class Camera
 
         int mouseX;
         int mouseY;
+
+        bool forward;
+
+        bool inputEnabled;
 
 };
 

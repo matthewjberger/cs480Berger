@@ -5,7 +5,6 @@
 #include "Texture.h"
 #include "ShaderProgram.h"
 #include "Mesh.h"
-#include "Camera.h"
 
 class Model
 {
@@ -14,7 +13,6 @@ class Model
         ~Model();
 
         void Draw();
-        void Draw(ShaderProgram &program, Camera *camera, std::string glslMvpUniformName = "mvpMatrix");
         void LoadTexture(std::string image, bool genMipMaps);
         void Free();
 
