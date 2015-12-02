@@ -1,4 +1,5 @@
 #include "InitialState.h"
+#include "PauseState.h"
 #include <iostream>
 using namespace std;
 InitialState* InitialState::instance = 0;
@@ -49,11 +50,10 @@ void InitialState::Initialize(GlutProgram* program)
 
     contextMenu = Menu::GetInstance();
     contextMenu->AddEntry("Start", MENU_START );
-    contextMenu->AddEntry("Stop",  MENU_STOP  );
     contextMenu->AddEntry("Quit",  MENU_QUIT  );
     contextMenu->AddEntry("Pause", MENU_PAUSE );
-    contextMenu->AddEntry("Raised View", MENU_RAISED_VIEW);
-    contextMenu->AddEntry("Player View", MENU_PLAYER_VIEW);
+    contextMenu->AddEntry("Top Down View", MENU_RAISED_VIEW);
+    contextMenu->AddEntry("Angled View", MENU_PLAYER_VIEW);
     contextMenu->AttachToMouseRight();
 
     camera = new Camera();
@@ -69,19 +69,20 @@ void InitialState::Initialize(GlutProgram* program)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
+    models[0] = new Model("Assets/labyrinth.obj",  "Assets/mazefloor.png", true);
+    models[1] = new Model("Assets/sphere.obj",     "Assets/blue.jpg", true);
+
     physicsManager = new PhysicsManager();
 
     // Generate collision shapes
-    btCollisionShape* sphereShape   = new btSphereShape(1.2f);
+    btCollisionShape* sphereShape   = new btSphereShape(0.05f);
 
     // Add rigid bodies
+    physicsManager->AddRigidBody(models[0]->GetCollisionShape());
     physicsManager->AddRigidBody(sphereShape,
-            btVector3(-1.0f, 7.0f, 0.0f),
-            btScalar(2.0f),
+            btVector3(0.0f, 2.0f, 0.0f),
+            btScalar(1.0f),
             btScalar(0.3f));
-
-    models[0] = new Model("Assets/labyrinth.obj",  "Assets/mazefloor.png", true);
-    models[1] = new Model("Assets/sphere.obj",     "Assets/blue.jpg", true);
 
     skybox = new Skybox("Assets/skybox/right.jpg",
             "Assets/skybox/left.jpg",
@@ -128,18 +129,17 @@ void InitialState::Update()
         case MENU_START:
             break;
 
-        case MENU_STOP:
-            break;
-
         case MENU_QUIT:
             mainProgram->Quit();
             break;
+
         case MENU_PAUSE:
+            GlutProgram::GetInstance()->PushState(PauseState::GetInstance());
             break;
 
         case MENU_RAISED_VIEW:
             // Raised view
-            camera->LookAt(glm::vec3(2.0f, 2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0));
+            camera->LookAt(glm::vec3(2.00f, 2.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0));
             break;
 
         case MENU_PLAYER_VIEW:
@@ -151,7 +151,10 @@ void InitialState::Update()
 
     camera->Update();
     physicsManager->Update();
-}
+    models[0]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(0));
+    models[1]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(1));
+    models[1]->Scale(glm::vec3(0.05,0.05,0.05));
+ }
 
 void InitialState::Render()
 {
@@ -168,7 +171,7 @@ void InitialState::Render()
     models[0]->Draw();
 
     // Draw puck
-    shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(physicsManager->GetModelMatrixAtIndex(0)));
+    shaderProgram.SetUniform("mvpMatrix", camera->GetMVP(models[1]->GetModelMatrix()));
     models[1]->Draw();
 
     PrintText(0, 0,  "Current Score: 0");

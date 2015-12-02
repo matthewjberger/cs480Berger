@@ -29,7 +29,7 @@ class GlutProgram
                          int width               = 640,
                          int height              = 480,
                          int flags               = GLUT_DOUBLE | GLUT_DEPTH,
-                         std::string windowTitle = "OpenGL Program");
+                         std::string windowTitle = "Labyrinth");
 
         bool LoadContent(ProgramState* initialState);
         void Quit(std::string message = "");
