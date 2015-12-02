@@ -1,6 +1,7 @@
 #include "InitialState.h"
 #include "PauseState.h"
 #include <iostream>
+#include <sstream>
 using namespace std;
 InitialState* InitialState::instance = 0;
 InitialState::InitialState(){}
@@ -52,8 +53,8 @@ void InitialState::Initialize(GlutProgram* program)
     contextMenu->AddEntry("Start", MENU_START );
     contextMenu->AddEntry("Quit",  MENU_QUIT  );
     contextMenu->AddEntry("Pause", MENU_PAUSE );
-    contextMenu->AddEntry("Top Down View", MENU_RAISED_VIEW);
-    contextMenu->AddEntry("Angled View", MENU_PLAYER_VIEW);
+    contextMenu->AddEntry("High View", MENU_RAISED_VIEW);
+    contextMenu->AddEntry("Low View", MENU_PLAYER_VIEW);
     contextMenu->AttachToMouseRight();
 
     camera = new Camera();
@@ -90,6 +91,8 @@ void InitialState::Initialize(GlutProgram* program)
             "Assets/skybox/bottom.jpg",
             "Assets/skybox/back.jpg",
             "Assets/skybox/front.jpg");
+
+    start = std::clock();
 }
 
 void InitialState::Finalize()
@@ -154,6 +157,9 @@ void InitialState::Update()
     models[0]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(0));
     models[1]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(1));
     models[1]->Scale(glm::vec3(0.05,0.05,0.05));
+
+    duration = (( std::clock() - start ) / (double) 360 );
+    duration = duration/1000.00;
  }
 
 void InitialState::Render()
@@ -175,5 +181,11 @@ void InitialState::Render()
     models[1]->Draw();
 
     PrintText(0, 0,  "Current Score: 0");
+
+    std::ostringstream ss;
+    ss << "Elapsed Time: ";
+    int d = duration;
+    ss << d << " seconds";
+    PrintText(320,400, ss.str());
 }
 

@@ -5,6 +5,8 @@
 #include "../core/PhysicsManager.h"
 #include "../core/Camera.h"
 #include "../core/Skybox.h"
+#include <cstdio>
+#include <ctime>
 
 enum
 {
@@ -53,5 +55,8 @@ class InitialState : public ProgramState
 
         Model* models[2];
         Skybox* skybox;
+
+        std::clock_t start;
+        double duration;
 
 };
