@@ -76,7 +76,7 @@ void InitialState::Initialize(GlutProgram* program)
     physicsManager = new PhysicsManager();
 
     // Generate collision shapes
-    btCollisionShape* sphereShape   = new btSphereShape(0.05f);
+    btCollisionShape* sphereShape   = new btSphereShape(0.05f * 0.75f);
 
     // Add rigid bodies
     physicsManager->AddRigidBody(models[0]->GetCollisionShape());
@@ -156,7 +156,8 @@ void InitialState::Update()
     physicsManager->Update();
     models[0]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(0));
     models[1]->SetModelMatrix(physicsManager->GetModelMatrixAtIndex(1));
-    models[1]->Scale(glm::vec3(0.05,0.05,0.05));
+    float ballScale = 0.05f * 0.75f;
+    models[1]->Scale(glm::vec3(ballScale));
 
     duration = (( std::clock() - start ) / (double) 360 );
     duration = duration/1000.00;
