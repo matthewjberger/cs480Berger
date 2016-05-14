@@ -39,14 +39,14 @@ After being exported, the model for the object looked like this:
 In my model loader, I simply had a class with a LoadModel() function.
 
 I began by creating temporary vectors to hold vertex, texture coordinate, and normal data. There was also a vector to hold indices for when the faces are parsed:
-
+```cpp
     vector<unsigned int> vIndices, uvIndices, nIndices;
     vector<glm::vec3> tempV;
     vector<glm::vec2> tempUV;
     vector<glm::vec3> tempN;
-
+```
 I iterate over the file line by line after opening it and check the first character of each line and storing data appropriately:
-
+```cpp
     // Iterate over the file line by line
     while(getline(file, line, '\n'))
     {
@@ -76,9 +76,9 @@ I iterate over the file line by line after opening it and check the first charac
             ss >> normal.x >> normal.y >> normal.z;
             tempN.push_back(normal);
         }
-
+```
 The last thing to parse is the faces, which have three sets of three numbers delimited by forward slashes. To  parse this, I create a string stream that will hold the three sets concatenated with forward slashes, and then use getline() to iterate over each token in that using '/' as the delimiter:
-
+```cpp
         // Face
         else if(firstToken == "f")
         {
@@ -94,10 +94,10 @@ The last thing to parse is the faces, which have three sets of three numbers del
             vIndices.push_back(stoi(items[0]));
             vIndices.push_back(stoi(items[3]));
             vIndices.push_back(stoi(items[6]));
-
+```
 
 Next I display all the loaded data for debugging purposes:
-
+```cpp
     cout << "Loaded Vertices: " << endl;
     for(unsigned int i = 0; i < tempV.size(); i++)
     {
@@ -118,9 +118,10 @@ Next I display all the loaded data for debugging purposes:
         cout << tempN[i].x << " " << tempN[i].y << " " << tempN[i].z << endl;
     }
     cout << endl;
+```
 
 And finally I load the data into the proper member vectors in the right order based on the order that the face lines described:
-
+```cpp
     for(unsigned int i = 0; i < vIndices.size(); i++)
     {
         unsigned int vertexIndex = vIndices[i];
@@ -143,3 +144,4 @@ And finally I load the data into the proper member vectors in the right order ba
     }
 
     cout << "Finished loading model successfully!" << endl;
+```
